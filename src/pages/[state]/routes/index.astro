@@ -17,12 +17,13 @@ export function getStaticPaths() {
 
 const { state, routes } = Astro.props;
 const title = `${state.corporation} Bus Timetables, Fares & Intercity Routes — ${state.name}`;
-const description = `Official directory of ${state.corporation} (${state.corporationFull}) intercity bus timetables, ticket prices, frequency, and first/last bus schedules across ${state.name}. Verified government roadway transit.`;
+const description = `Directory reference for ${state.corporation} (${state.corporationFull}) intercity bus timetables, ticket prices, departure frequency, and first/last bus schedules connecting ${state.name}.`;
 const path = `/${state.slug}/routes`;
 
 const breadcrumbs = [
+  { label: 'State RTCs', href: '/states' },
   { label: state.name, href: `/${state.slug}` },
-  { label: 'Bus Timetables & Routes', href: path },
+  { label: 'Routes', href: path },
 ];
 
 const jsonLd = [
@@ -38,8 +39,9 @@ const jsonLd = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rtc.shivrajsinh.in/' },
-      { '@type': 'ListItem', position: 2, name: state.name, item: `https://rtc.shivrajsinh.in/${state.slug}` },
-      { '@type': 'ListItem', position: 3, name: 'Routes', item: `https://rtc.shivrajsinh.in${path}` },
+      { '@type': 'ListItem', position: 2, name: 'State RTCs', item: 'https://rtc.shivrajsinh.in/states' },
+      { '@type': 'ListItem', position: 3, name: state.name, item: `https://rtc.shivrajsinh.in/${state.slug}` },
+      { '@type': 'ListItem', position: 4, name: 'Routes', item: `https://rtc.shivrajsinh.in${path}` },
     ],
   },
 ];
@@ -47,83 +49,97 @@ const jsonLd = [
 
 <Base title={title} description={description} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
 
-  <section class="page-hero">
-    <div style="font-size:0.8rem;font-weight:700;color:var(--transit-amber);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.35rem;">{state.corporation} Intercity Network · {state.name}</div>
-    <h1 class="page-title">{state.corporation} Bus Timetables &amp; Route Fares</h1>
-    <p class="page-lede">
-      Verified departure schedules, distance, travel duration, and ticket fares for major <strong>{state.corporation}</strong> intercity and interstate highway routes connecting <strong>{state.name}</strong>.
-    </p>
-  </section>
+  <div class="wrap" style="padding-top:1rem;padding-bottom:3rem;">
 
-  <!-- Above-The-Fold Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
-
-  <!-- Routes Directory Grid -->
-  <section aria-labelledby="routes-heading">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
-      <div>
-        <h2 class="section-h2" id="routes-heading" style="margin-bottom:0.25rem;">Major Express Bus Corridors</h2>
-        <p style="color:var(--ink-muted);font-size:0.9rem;">Select any route to check point-to-point departure times, ticket prices, and bus stand counters:</p>
+    <header style="margin-bottom:2rem;">
+      <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--primary-blue);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.35rem;">
+        {state.corporation} Intercity Network · {state.name}
       </div>
-      <a class="btn-dial secondary" href={`/${state.slug}`} style="font-size:0.8rem;padding:0.4rem 0.8rem;">
-        <span>{state.name} Depot Contacts</span>
-      </a>
-    </div>
+      <h1 class="section-title" style="font-size:2.2rem;margin-bottom:0.4rem;">
+        {state.corporation} Bus Timetables &amp; Route Fares
+      </h1>
+      <p class="section-subtitle" style="font-size:1.05rem;line-height:1.6;max-width:760px;">
+        Departure schedules, distance, travel duration, and starting ticket fares for major <strong>{state.corporation}</strong> highway corridors connecting <strong>{state.name}</strong>.
+      </p>
+    </header>
 
-    <div class="state-hub-grid" style="grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));">
-      {routes.map((r) => (
-        <a class="state-card" href={`/${state.slug}/routes/${r.slug}`} style="border-left: 3px solid var(--transit-blue);">
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
-              <span class="state-card-corp">{r.corporation} Express</span>
-              <span style="font-size:0.75rem;padding:0.15rem 0.45rem;background:var(--transit-green-bg);color:var(--transit-green);border:1px solid var(--transit-green);border-radius:2px;font-weight:700;">
-                {r.durationHours}
-              </span>
+    <!-- Above-The-Fold Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+    <!-- Routes Directory Grid -->
+    <section aria-labelledby="routes-heading" style="margin:2.5rem 0;">
+      <div class="section-heading-row">
+        <div>
+          <h2 class="section-title" id="routes-heading" style="font-size:1.55rem;">
+            Major Express Bus Corridors ({routes.length})
+          </h2>
+          <p class="section-subtitle">
+            Select any corridor to view departure timings, ticket prices, and platform enquiry phone desks:
+          </p>
+        </div>
+        <a class="section-link" href={`/${state.slug}`}>
+          <span>{state.name} Depot Contacts</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="routes-grid">
+        {routes.map((r) => (
+          <a class="route-card" href={`/${state.slug}/routes/${r.slug}`}>
+            <div>
+              <div class="route-card-header">
+                <span class="route-card-operator">{r.corporation} Express</span>
+                <span class="route-card-duration">{r.durationHours}</span>
+              </div>
+              <h3 class="route-card-corridor" style="font-size:1.15rem;">
+                {r.originCity} ⇄ {r.destinationCity}
+              </h3>
+              <p class="route-card-specs">
+                {r.distanceKm} km via {r.highway} · {r.frequency}
+                <br />
+                First bus: {r.firstBus} · Night service: {r.lastBus}
+              </p>
             </div>
-            <h3 class="state-card-name" style="font-size:1.15rem;">
-              {r.originCity} to {r.destinationCity}
-            </h3>
-            <p class="state-card-desc" style="font-size:0.82rem;margin-bottom:0.75rem;">
-              {r.distanceKm} km via {r.highway} · {r.frequency} frequency. First bus {r.firstBus}, last bus {r.lastBus}.
-            </p>
-          </div>
-          <div class="state-card-meta">
-            <span style="font-size:0.82rem;font-weight:700;color:var(--transit-green);font-variant-numeric:tabular-nums;">
-              From {r.fares[0].price}
-            </span>
-            <span style="color:var(--transit-blue);font-weight:700;">Full Timetable</span>
-          </div>
+            <div class="route-card-footer">
+              <span class="route-card-fare">From {r.fares[0].price}</span>
+              <span class="route-card-action">Full Timetable</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Mid-Content Ad Slot -->
+    <AdSlot slotId="8460038937" label="Advertisement" />
+
+    <!-- Statewide Booking & Support Strip -->
+    <section class="dial-action-strip" style="margin:2.5rem 0;" aria-label="Official Booking & Helpline">
+      <div class="dial-strip-header">
+        <div class="dial-strip-title">{state.corporation} Passenger Booking Support</div>
+        <div class="dial-strip-sub">24×7 customer service desk and official portal</div>
+      </div>
+      <p style="font-size:0.9rem;color:var(--slate-muted);line-height:1.6;margin-bottom:1rem;">
+        Tickets for express, sleeper, and AC coaches can be reserved up to 30 days in advance on the official {state.corporation} portal. For phone inquiries, duty controller confirmation, or seat availability, dial the 24×7 toll-free helpline:
+      </p>
+      <div class="call-button-group">
+        <a class="btn-dial" href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Call Helpline: {state.helpline.primary}</span>
         </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- Mid-Content Ad Slot -->
-  <AdSlot slotId="8460038937" label="Advertisement" />
-
-  <!-- Statewide Travel & Booking Information -->
-  <section class="dial-action-strip" style="margin-top:2rem;" aria-label="Official Booking & Helpline">
-    <div class="dial-strip-header">
-      <div class="dial-strip-title">{state.corporation} Passenger Booking Support</div>
-      <div class="dial-strip-sub">24x7 passenger helpline and official booking portal</div>
-    </div>
-    <p style="font-size:0.9rem;color:var(--ink-muted);line-height:1.6;margin-bottom:1rem;">
-      Tickets for express, sleeper, and luxury coaches can be reserved up to 30 days in advance on the official {state.corporation} portal. For phone inquiries, duty controller confirmation, or seat availability, dial the 24x7 toll-free helpline:
-    </p>
-    <div class="call-button-group">
-      <a class="btn-dial" href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span>Call Helpline: {state.helpline.primary}</span>
-      </a>
-      {state.officialSite && (
-        <a class="btn-dial secondary" href={state.officialSite} target="_blank" rel="noopener noreferrer">
-          <span>Official Portal ({state.officialSite.replace('https://', '')})</span>
+        {state.officialSite && (
+          <a class="btn-dial secondary" href={state.officialSite} target="_blank" rel="noopener noreferrer">
+            <span>Official Portal ({state.officialSite.replace('https://', '')})</span>
+          </a>
+        )}
+        <a class="btn-dial secondary" href="/timetables">
+          <span>All National Timetables</span>
         </a>
-      )}
-    </div>
-  </section>
+      </div>
+    </section>
 
-  <!-- Pre-Footer Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored" />
+    <!-- Pre-Footer Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored" />
+
+  </div>
 
 </Base>

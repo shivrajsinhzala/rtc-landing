@@ -1,0 +1,145 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { ROUTES } from '../../data/routes.data.mjs';
+import { stateList } from '../../config/states.mjs';
+
+const title = 'Intercity Bus Timetables & Fares Directory — All RTCs';
+const description = 'Comprehensive timetable reference for 70 major intercity and interstate highway bus corridors across 8 Indian State Road Transport Corporations.';
+
+const breadcrumbs = [
+  { label: 'Timetables', href: '/timetables' },
+];
+
+const stateCodes: Record<string, string> = {
+  'uttar-pradesh': 'UP',
+  'maharashtra': 'MH',
+  'rajasthan': 'RJ',
+  'haryana': 'HR',
+  'himachal-pradesh': 'HP',
+  'uttarakhand': 'UK',
+  'punjab': 'PB',
+  'gujarat': 'GJ',
+};
+---
+
+<Base title={title} description={description} path="/timetables" breadcrumbs={breadcrumbs}>
+
+  <div class="wrap" style="padding-top:1.5rem;padding-bottom:3rem;">
+    
+    <header style="margin-bottom:2rem;">
+      <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--primary-blue);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.35rem;">
+        National Route Reference
+      </div>
+      <h1 class="section-title" style="font-size:2.25rem;margin-bottom:0.5rem;">Intercity Bus Timetables &amp; Fares</h1>
+      <p class="section-subtitle" style="max-width:700px;font-size:1rem;line-height:1.6;">
+        Point-to-point departure frequencies, operating distance, travel duration, starting fares, and station enquiry numbers for 70 key highway corridors across India.
+      </p>
+    </header>
+
+    <!-- Above-The-Fold Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+    <!-- State Filter Tabs -->
+    <div style="margin:2rem 0 1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;" role="tablist" aria-label="Filter by state">
+      <span style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--slate-muted);margin-right:0.5rem;">Filter State:</span>
+      <button class="state-filter-btn active" data-state="all">All Corridors ({ROUTES.length})</button>
+      {stateList.map((s) => {
+        const count = ROUTES.filter((r) => r.stateId === s.id).length;
+        const code = stateCodes[s.id] || s.id;
+        return (
+          <button class="state-filter-btn" data-state={s.id}>
+            {code} ({count})
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- Corridors Responsive Grid -->
+    <section aria-label="Intercity Corridors Directory" style="margin-bottom:3rem;">
+      <div class="routes-grid" id="routes-container">
+        {ROUTES.map((r) => (
+          <a class="route-card route-filterable-item" data-state={r.stateId} href={`/${r.stateId}/routes/${r.slug}`}>
+            <div>
+              <div class="route-card-header">
+                <span class="route-card-operator">{r.corporation} Express</span>
+                <span class="route-card-duration">{r.durationHours}</span>
+              </div>
+              <h2 class="route-card-corridor" style="font-size:1.15rem;">{r.originCity} ⇄ {r.destinationCity}</h2>
+              <p class="route-card-specs">
+                {r.distanceKm} km via {r.highway} · {r.frequency}
+                <br />
+                First departure: {r.firstBus} · Night service: {r.lastBus}
+              </p>
+            </div>
+            <div class="route-card-footer">
+              <span class="route-card-fare">From {r.fares[0].price}</span>
+              <span class="route-card-action">View timetable</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Mid-Content Ad Slot -->
+    <AdSlot slotId="8460038937" label="Advertisement" />
+
+    <!-- Trust & Verification Notice -->
+    <section class="trust-statement-box" aria-label="About this directory">
+      <h3 class="trust-statement-title">Timetable Sourcing Note</h3>
+      <p class="trust-statement-text">
+        Bus timings and fares listed in this directory represent standard scheduled departures published by respective State Road Transport Corporations. Actual road departure times may vary due to seasonal timetable adjustments, road works, and traffic conditions. Always confirm departure platforms with the origin station master desk before travel.
+      </p>
+    </section>
+
+    <!-- Pre-Footer Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored" />
+
+  </div>
+
+  <style>
+    .state-filter-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--ink-secondary);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 36px;
+      transition: all 0.15s ease;
+    }
+    .state-filter-btn:hover {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+    }
+    .state-filter-btn.active {
+      background: var(--primary-blue);
+      border-color: var(--primary-blue);
+      color: #ffffff;
+    }
+  </style>
+
+  <script>
+    const filterButtons = document.querySelectorAll('.state-filter-btn');
+    const items = document.querySelectorAll('.route-filterable-item');
+
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const state = btn.getAttribute('data-state');
+        items.forEach((it) => {
+          if (state === 'all' || it.getAttribute('data-state') === state) {
+            (it as HTMLElement).style.display = 'flex';
+          } else {
+            (it as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+
+</Base>

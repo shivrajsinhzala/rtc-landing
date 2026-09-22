@@ -1,0 +1,136 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { stateList } from '../../config/states.mjs';
+
+const title = 'Emergency & Highway Helplines Directory — All-India Public Utility';
+const description = 'Direct phone dial directory for National Emergency (112), NHAI Highway Assistance (1033), Women Powerline (1090), Accident Relief (1073), and state RTC passenger helplines.';
+
+const breadcrumbs = [
+  { label: 'Emergency Helplines', href: '/emergency' },
+];
+
+const tel = (n: string) => n.replace(/[^0-9]/g, '');
+---
+
+<Base title={title} description={description} path="/emergency" breadcrumbs={breadcrumbs}>
+
+  <div class="wrap" style="padding-top:1.5rem;padding-bottom:3rem;">
+    
+    <header style="margin-bottom:2rem;">
+      <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--warm-accent);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.35rem;">
+        Immediate Public Assistance
+      </div>
+      <h1 class="section-title" style="font-size:2.25rem;margin-bottom:0.5rem;">Emergency &amp; Highway Helpline Directory</h1>
+      <p class="section-subtitle" style="max-width:720px;font-size:1rem;line-height:1.6;">
+        Immediate 24×7 telephone lines for road accidents, police assistance, highway breakdowns, vehicle towing, and state road transport control rooms across India.
+      </p>
+    </header>
+
+    <!-- Above-The-Fold Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+    <!-- National Helplines Section (Dark Navy #152339) -->
+    <section class="emergency-section-wrap" aria-labelledby="national-emergency-heading" style="margin-top:2rem;">
+      <h2 class="emergency-section-title" id="national-emergency-heading">National Emergency Numbers</h2>
+      <p class="emergency-section-desc">
+        Toll-free emergency numbers accessible from any mobile or landline across all Indian states and Union Territories:
+      </p>
+
+      <div class="emergency-grid">
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">National Emergency (All Services)</div>
+            <div class="emergency-card-desc">Unified Police, Medical &amp; Fire Services</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:112" aria-label="Call 112 National Emergency">
+            <span class="emergency-number">112</span>
+            <span class="emergency-call-text">Direct Call</span>
+          </a>
+        </div>
+
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">National Highway Helpline</div>
+            <div class="emergency-card-desc">NHAI Expressway Breakdown, Towing &amp; Ambulance</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:1033" aria-label="Call 1033 Highway Helpline">
+            <span class="emergency-number">1033</span>
+            <span class="emergency-call-text">Direct Call</span>
+          </a>
+        </div>
+
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">Women Powerline</div>
+            <div class="emergency-card-desc">24×7 Passenger Safety, Harassment &amp; Grievance</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:1090" aria-label="Call 1090 Women Powerline">
+            <span class="emergency-number">1090</span>
+            <span class="emergency-call-text">Direct Call</span>
+          </a>
+        </div>
+
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">Road Accident Helpline</div>
+            <div class="emergency-card-desc">Trauma Relief &amp; Emergency Medical Transit</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:1073" aria-label="Call 1073 Road Accident Helpline">
+            <span class="emergency-number">1073</span>
+            <span class="emergency-call-text">Direct Call</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mid-Content Ad Slot -->
+    <AdSlot slotId="8460038937" label="Advertisement" />
+
+    <!-- State RTC Control Rooms & Passenger Support -->
+    <section aria-labelledby="state-helpline-heading" style="margin:2.5rem 0;">
+      <h2 class="section-title" id="state-helpline-heading" style="font-size:1.6rem;margin-bottom:0.4rem;">
+        State Transport Corporation Passenger Helplines
+      </h2>
+      <p class="section-subtitle" style="margin-bottom:1.5rem;">
+        24×7 customer service desks for bus tracking, platform inquiries, breakdown assistance, and ticketing grievances:
+      </p>
+
+      <div class="rtc-grid" style="grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));">
+        {stateList.map((s) => (
+          <div class="rtc-card" style="min-height:auto;">
+            <div>
+              <div class="rtc-card-top">
+                <span class="state-chip">{s.name}</span>
+                <span style="font-size:0.75rem;color:var(--success);font-weight:700;">24×7 Open</span>
+              </div>
+              <h3 class="rtc-card-title">{s.corporation}</h3>
+              <p style="font-size:0.8rem;color:var(--slate-muted);margin-top:0.25rem;">
+                {s.helpline.label}
+              </p>
+            </div>
+            <div style="margin-top:1.25rem;">
+              <a class="btn-dial" href={`tel:${tel(s.helpline.primary)}`} style="width:100%;justify-content:center;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <span>Call {s.helpline.primary}</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Trust & Verification Notice -->
+    <section class="trust-statement-box" aria-label="About helpline numbers">
+      <h3 class="trust-statement-title">Helpline Availability &amp; Responsibility Notice</h3>
+      <p class="trust-statement-text">
+        Emergency numbers (112, 1033, 1090, 1073) and state RTC customer care desks are administered independently by national authorities and state transport undertakings. Telecommunications connectivity, line congestion, and desk staffing are managed by respective operators. In case of immediate life threat or urgent highway rescue, dial 112 directly.
+      </p>
+    </section>
+
+    <!-- Pre-Footer Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored" />
+
+  </div>
+
+</Base>

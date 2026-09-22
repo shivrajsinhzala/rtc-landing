@@ -6,7 +6,6 @@ interface Props {
   title: string;
   description: string;
   keywords?: string;
-  /** Path with leading slash, e.g. '/uttar-pradesh/agra-bus-station-contact-number'. */
   path: string;
   jsonLd?: unknown[];
   htmlLang?: string;
@@ -68,7 +67,7 @@ const baseJsonLd: unknown[] = [
       },
       {
         '@type': 'ContactPoint',
-        telephone: '1800-180-2345',
+        telephone: '1800-180-2057',
         contactType: 'Haryana Roadways Passenger Helpline',
         areaServed: 'IN-HR',
         availableLanguage: ['Hindi', 'English'],
@@ -76,7 +75,7 @@ const baseJsonLd: unknown[] = [
       {
         '@type': 'ContactPoint',
         telephone: '112',
-        contactType: 'National All-India Emergency Service',
+        contactType: 'National Emergency Service',
         areaServed: 'IN',
       },
     ],
@@ -86,7 +85,7 @@ const baseJsonLd: unknown[] = [
 ---
 
 <!doctype html>
-<html lang={htmlLang} data-theme="auto">
+<html lang={htmlLang}>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -94,6 +93,11 @@ const baseJsonLd: unknown[] = [
 <meta name="description" content={description} />
 <meta name="keywords" content={keywords} />
 <meta name="google-adsense-account" content={AD_CLIENT} />
+
+<!-- Google Fonts: Space Grotesk (Display), DM Sans (Body), DM Mono (Metadata) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400..700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 
 <!-- AdSense Script -->
 <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`} crossorigin="anonymous"></script>
@@ -116,8 +120,7 @@ const baseJsonLd: unknown[] = [
 <meta name="twitter:description" content={description} />
 
 <!-- Theme Colors & Favicons -->
-<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#152339" />
 <link rel="icon" href="/icons/logo.svg" type="image/svg+xml" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 
@@ -128,10 +131,13 @@ const baseJsonLd: unknown[] = [
 </head>
 <body>
 
-<!-- Institutional Top Notice Bar -->
-<div class="gov-notice-bar">
-  <div class="wrap gov-notice-content">
-    <div class="gov-flag-badge">
+<!-- Accessible Skip Link -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- 1. Top Utility Line -->
+<div class="top-utility-bar">
+  <div class="wrap top-utility-inner">
+    <div class="utility-badge-text">
       <svg width="14" height="10" viewBox="0 0 24 16" fill="none" aria-hidden="true">
         <rect width="24" height="5.33" fill="#FF9933"/>
         <rect y="5.33" width="24" height="5.34" fill="#FFFFFF"/>
@@ -140,40 +146,57 @@ const baseJsonLd: unknown[] = [
       </svg>
       <span>National State Road Transport Helpline Directory · Public Utility</span>
     </div>
-    <div class="gov-right-links">
-      <a class="gov-helpline-quick" href="tel:112">Emergency: 112</a>
-      <a class="gov-helpline-quick" href="tel:1033">Highway Helpline: 1033</a>
+    <div class="utility-emergency-links">
+      <a class="utility-tel-link" href="tel:112">Emergency: 112</a>
+      <a class="utility-tel-link" href="tel:1033">Highway Helpline: 1033</a>
     </div>
   </div>
 </div>
 
-<!-- Main Site Header -->
+<!-- 2. Header / Navigation -->
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand-wrap" href="/" aria-label="RTC Portal Home">
-      <img class="brand-logo" src="/icons/logo.svg" alt="RTC Portal Logo" width="40" height="40" />
+      <img class="brand-logo" src="/icons/logo.svg" alt="RTC Portal Logo" width="36" height="36" />
       <div class="brand-titles">
         <span class="brand-title">RTC Portal</span>
-        <span class="brand-tagline">State Road Transport Helplines &amp; Depots</span>
+        <span class="brand-tagline">Indian State Road Transport Directory</span>
       </div>
     </a>
 
+    <!-- Desktop Nav -->
     <nav class="header-nav" aria-label="Main Navigation">
-      <a class="nav-state-pill" href="/uttar-pradesh"><span class="code">UP</span><span>Roadways</span></a>
-      <a class="nav-state-pill" href="/maharashtra"><span class="code">MH</span><span>ST Bus</span></a>
-      <a class="nav-state-pill" href="/rajasthan"><span class="code">RJ</span><span>RSRTC</span></a>
-      <a class="nav-state-pill" href="/haryana"><span class="code">HR</span><span>Roadways</span></a>
-      <a class="nav-state-pill" href="/himachal-pradesh"><span class="code">HP</span><span>HRTC</span></a>
-      <a class="nav-state-pill" href="/uttarakhand"><span class="code">UK</span><span>UTC</span></a>
-      <a class="nav-state-pill" href="/punjab"><span class="code">PB</span><span>PUNBUS</span></a>
-      <a class="nav-state-pill" href="/gujarat"><span class="code">GJ</span><span>GSRTC</span></a>
+      <a class="nav-link" href="/states">State RTCs</a>
+      <a class="nav-link" href="/timetables">Timetables</a>
+      <a class="nav-link" href="/emergency">Emergency</a>
+      <a class="btn-primary-action" href="/#national-search-input" id="header-search-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Find information</span>
+      </a>
     </nav>
+
+    <!-- Mobile Hamburger Button -->
+    <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav-drawer">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="3" y1="12" x2="21" y2="12" class="line-mid"/>
+        <line x1="3" y1="6" x2="21" y2="6" class="line-top"/>
+        <line x1="3" y1="18" x2="21" y2="18" class="line-bot"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Nav Drawer -->
+  <div class="mobile-nav-drawer" id="mobile-nav-drawer" role="region" aria-label="Mobile Navigation">
+    <a class="mobile-nav-link" href="/states">State RTCs Directory</a>
+    <a class="mobile-nav-link" href="/timetables">Intercity Timetables</a>
+    <a class="mobile-nav-link" href="/emergency">Emergency &amp; Highway Desks</a>
+    <a class="mobile-nav-link" href="/#national-search-input" style="color:var(--primary-blue);font-weight:700;">Search Stations &amp; Corridors</a>
   </div>
 </header>
 
-<!-- Breadcrumbs if provided -->
+<!-- Breadcrumbs Navigation -->
 {breadcrumbs.length > 0 && (
-  <nav class="wrap breadcrumbs-nav" aria-label="Breadcrumbs">
+  <nav class="wrap breadcrumbs-nav" aria-label="Breadcrumb">
     <ol class="breadcrumbs-list">
       <li><a href="/">Home</a></li>
       {breadcrumbs.map((crumb, idx) => (
@@ -192,7 +215,8 @@ const baseJsonLd: unknown[] = [
   </nav>
 )}
 
-<main class="wrap main-content">
+<!-- Main Content Landmark -->
+<main id="main-content" class="main-content">
   <slot />
 </main>
 
@@ -205,7 +229,7 @@ const baseJsonLd: unknown[] = [
         <span>RTC Portal</span>
       </div>
       <p class="footer-brand-desc">
-        Authoritative national directory of State Road Transport Corporation (RTC) bus stand inquiry desks, station master telephone lines, and intercity bus timetables. Sourced directly from official published transport records.
+        RTC Portal is an independent national directory compiled from published transport records. It helps commuters quickly find bus stand inquiry desks, station master telephone lines, and intercity bus timetable references across India.
       </p>
     </div>
 
@@ -216,6 +240,7 @@ const baseJsonLd: unknown[] = [
         <li><a href="tel:1033">National Highway: 1033</a></li>
         <li><a href="tel:1090">Women Powerline: 1090</a></li>
         <li><a href="tel:1073">Road Accident Helpline: 1073</a></li>
+        <li><a href="/emergency">Full Emergency Directory</a></li>
       </ul>
     </div>
 
@@ -230,21 +255,58 @@ const baseJsonLd: unknown[] = [
         <li><a href="/uttarakhand">Uttarakhand (UTC)</a></li>
         <li><a href="/punjab">Punjab (PUNBUS / PRTC)</a></li>
         <li><a href="/gujarat">Gujarat (GSRTC)</a></li>
+        <li><a href="/states" style="color:var(--muted-blue);font-weight:600;">View All 8 State RTCs</a></li>
       </ul>
     </div>
   </div>
 
   <div class="wrap footer-bottom">
     <p>
-      © 2026 RTC Portal. Independent public directory. Not affiliated with or endorsed by UPSRTC, MSRTC, or the Ministry of Road Transport and Highways.
+      © 2026 RTC Portal. Independent public directory compiled from published transport records. Not affiliated with or endorsed by any government transport department. Verify critical details with respective RTCs before travel.
     </p>
-    <div>
+    <div style="display:flex;gap:1.25rem;">
+      <a href="/timetables">Timetables</a>
+      <a href="/states">State RTCs</a>
+      <a href="/emergency">Emergency</a>
       <a href="/sitemap-index.xml">Sitemap</a>
     </div>
   </div>
 </footer>
 
 <script>
+  // Mobile Nav Toggle Script
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const drawer = document.getElementById('mobile-nav-drawer');
+
+  if (menuBtn && drawer) {
+    menuBtn.addEventListener('click', () => {
+      const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+      menuBtn.setAttribute('aria-expanded', String(!isExpanded));
+      drawer.classList.toggle('open');
+    });
+
+    // Close on navigation click
+    drawer.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        menuBtn.setAttribute('aria-expanded', 'false');
+        drawer.classList.remove('open');
+      });
+    });
+  }
+
+  // Header "Find information" button focuses search input
+  const headerSearchBtn = document.getElementById('header-search-btn');
+  if (headerSearchBtn) {
+    headerSearchBtn.addEventListener('click', (e) => {
+      const searchInput = document.getElementById('national-search-input');
+      if (searchInput) {
+        e.preventDefault();
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        searchInput.focus();
+      }
+    });
+  }
+
   // Resilient multi-slot AdSense binding
   function initAds() {
     const slots = document.querySelectorAll('ins.adsbygoogle');

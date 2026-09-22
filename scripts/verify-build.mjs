@@ -77,7 +77,7 @@ for (const [stateId, depots] of Object.entries(DEPOT_SOURCES)) {
   else pass(`${stateId}: every depot page has at least one sibling inbound link`);
 }
 
-// Verify all 30 route pages
+// Verify all 70 route pages
 let routeIssues = 0;
 for (const r of ROUTES) {
   const routePath = `/${r.stateId}/routes/${r.slug}`;
@@ -98,6 +98,22 @@ for (const r of ROUTES) {
   }
 }
 if (!routeIssues) pass(`routes: all ${ROUTES.length} intercity bus route pages carry their numbers and are linked from state route directories`);
+
+// Verify new dedicated core pages
+const corePages = [
+  { path: '/states', label: 'State RTCs Directory' },
+  { path: '/timetables', label: 'National Timetables Directory' },
+  { path: '/emergency', label: 'Emergency & Highway Helplines' },
+];
+
+for (const p of corePages) {
+  const f = fileFor(p.path);
+  if (!fs.existsSync(f)) {
+    fail(`Core page ${p.path} did not build`);
+  } else {
+    pass(`core: ${p.path} (${p.label}) built successfully`);
+  }
+}
 
 console.log(failures ? `\n${failures} check(s) failed.` : '\nAll checks passed.');
 process.exit(failures ? 1 : 0);

@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import { stateList } from '../../config/states.mjs';
+import { DEPOTS as UP_DEPOTS } from '../../data/uttar-pradesh/depots.data.mjs';
+import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
+import { DEPOTS as RJ_DEPOTS } from '../../data/rajasthan/depots.data.mjs';
+import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
+import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs';
+import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
+import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
+import { DEPOTS as GJ_DEPOTS } from '../../data/gujarat/depots.data.mjs';
+
+const title = 'State Road Transport Corporations (RTCs) Directory — India';
+const description = 'Complete directory of Indian State Road Transport Corporations (RTCs). Directory references for UPSRTC, MSRTC, RSRTC, Haryana Roadways, HRTC, UTC, PUNBUS, and GSRTC.';
+
+const depotCounts: Record<string, number> = {
+  'uttar-pradesh': UP_DEPOTS.length,
+  'maharashtra': MH_DEPOTS.length,
+  'rajasthan': RJ_DEPOTS.length,
+  'haryana': HR_DEPOTS.length,
+  'himachal-pradesh': HP_DEPOTS.length,
+  'uttarakhand': UK_DEPOTS.length,
+  'punjab': PB_DEPOTS.length,
+  'gujarat': GJ_DEPOTS.length,
+};
+
+const stateCodes: Record<string, string> = {
+  'uttar-pradesh': 'UP',
+  'maharashtra': 'MH',
+  'rajasthan': 'RJ',
+  'haryana': 'HR',
+  'himachal-pradesh': 'HP',
+  'uttarakhand': 'UK',
+  'punjab': 'PB',
+  'gujarat': 'GJ',
+};
+
+const breadcrumbs = [
+  { label: 'State RTCs', href: '/states' },
+];
+---
+
+<Base title={title} description={description} path="/states" breadcrumbs={breadcrumbs}>
+
+  <div class="wrap" style="padding-top:1.5rem;padding-bottom:3rem;">
+    
+    <header style="margin-bottom:2rem;">
+      <div style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--primary-blue);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.35rem;">
+        National RTC Directory
+      </div>
+      <h1 class="section-title" style="font-size:2.25rem;margin-bottom:0.5rem;">State Road Transport Corporations</h1>
+      <p class="section-subtitle" style="max-width:700px;font-size:1rem;line-height:1.6;">
+        Directory of state-run transport undertakings across India. Access divisional station master enquiry telephone numbers, regional depot desks, and intercity bus routes.
+      </p>
+    </header>
+
+    <!-- Above-The-Fold Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+    <!-- RTC Directory Grid -->
+    <section aria-label="List of State RTCs" style="margin:2.5rem 0;">
+      <div class="rtc-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
+        {stateList.map((s) => {
+          const code = stateCodes[s.id] || 'IN';
+          const count = depotCounts[s.id] || 0;
+          return (
+            <a class="rtc-card" href={`/${s.slug}`} aria-label={`${s.corporation} ${s.name}`}>
+              <div>
+                <div class="rtc-card-top">
+                  <span class="state-chip">{code}</span>
+                  <svg class="rtc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <h2 class="rtc-card-title">{s.corporation}</h2>
+                <div class="rtc-card-state">{s.name}</div>
+                <p style="font-size:0.8rem;color:var(--slate-muted);margin-top:0.4rem;">
+                  {s.corporationFull}
+                </p>
+              </div>
+              <div class="rtc-card-meta">
+                <span>{count} Divisional Stations</span>
+                <span style="color:var(--success);font-weight:600;">{s.helpline.primary}</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Mid-Content Ad Slot -->
+    <AdSlot slotId="8460038937" label="Advertisement" />
+
+    <!-- Trust & Verification Notice -->
+    <section class="trust-statement-box" aria-label="About this directory">
+      <h3 class="trust-statement-title">Published Directory Policy</h3>
+      <p class="trust-statement-text">
+        RTC Portal is an independent directory compiled from published transport records. It is not affiliated with government transport departments unless explicitly stated. Verify critical information with the relevant RTC before travelling.
+      </p>
+    </section>
+
+    <!-- Pre-Footer Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored" />
+
+  </div>
+
+</Base>

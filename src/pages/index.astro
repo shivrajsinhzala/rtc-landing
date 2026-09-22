@@ -12,8 +12,8 @@ import { DEPOTS as PB_DEPOTS } from '../data/punjab/depots.data.mjs';
 import { DEPOTS as GJ_DEPOTS } from '../data/gujarat/depots.data.mjs';
 import { ROUTES } from '../data/routes.data.mjs';
 
-const title = 'State Road Transport Helplines & Intercity Bus Timetables — All RTCs';
-const description = 'Official directory of Indian State Road Transport Corporation (RTC) bus stand enquiry numbers, station master helplines, and intercity express bus timetables across 8 states.';
+const title = 'RTC Portal — Indian State Road Transport Directory & Bus Timetables';
+const description = 'Independent national directory of Indian State Road Transport Corporation (RTC) bus station enquiry numbers, station master helplines, and intercity bus schedules across 8 states.';
 
 const allDepotSources = [
   { stateId: 'uttar-pradesh', corp: 'UPSRTC', depots: UP_DEPOTS },
@@ -26,40 +26,54 @@ const allDepotSources = [
   { stateId: 'gujarat', corp: 'GSRTC', depots: GJ_DEPOTS },
 ];
 
+// Rich Search Entries categorized into RTCs, Stations, Routes, Cities
 const allSearchEntries = [
+  // 1. RTCs
+  ...stateList.map((s) => ({
+    category: 'State RTCs',
+    title: `${s.corporation} — ${s.name}`,
+    sub: `${s.corporationFull} · Toll-Free: ${s.helpline.primary}`,
+    url: `/${s.slug}`,
+    action: 'View RTC',
+    keywords: `${s.id} ${s.name} ${s.corporation} ${s.corporationFull} rtc state transport directory`.toLowerCase(),
+  })),
+
+  // 2. Stations / Depots
   ...allDepotSources.flatMap(({ stateId, corp, depots }) =>
     depots.map((d) => {
       const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
       return {
-        title: `${name} Bus Station Contact Number`,
+        category: 'Bus Stations',
+        title: `${name} Bus Stand Enquiry`,
         sub: `${corp} · ${d.stands.length} counter${d.stands.length > 1 ? 's' : ''} (Primary: ${d.stands[0].numbers[0]})`,
         url: `/${stateId}/${depotSlug(d.city)}`,
-        action: 'View numbers',
-        keywords: `${d.city} ${d.region} ${d.alsoKnownAs || ''} ${corp} ${stateId} bus stand station enquiry phone contact`.toLowerCase(),
+        action: 'View phone',
+        keywords: `${d.city} ${d.region} ${d.alsoKnownAs || ''} ${corp} ${stateId} bus stand station enquiry counter contact master`.toLowerCase(),
       };
     })
   ),
+
+  // 3. Intercity Routes
   ...ROUTES.map((r) => ({
-    title: `${r.originCity} to ${r.destinationCity} Bus Timetable`,
-    sub: `${r.corporation} Express · ${r.frequency} · Fares from ${r.fares[0].price}`,
+    category: 'Intercity Routes',
+    title: `${r.originCity} to ${r.destinationCity}`,
+    sub: `${r.corporation} · ${r.frequency} · Fares from ${r.fares[0].price}`,
     url: `/${r.stateId}/routes/${r.slug}`,
     action: 'View timetable',
-    keywords: `${r.originCity} ${r.destinationCity} bus time table timings ticket price fare schedule express`.toLowerCase(),
+    keywords: `${r.originCity} ${r.destinationCity} bus time table timings ticket price fare schedule express ${r.highway}`.toLowerCase(),
   })),
-  {
-    title: 'National Emergency Helpline (112)',
-    sub: 'All-India Police, Medical & Disaster Emergency',
-    url: 'tel:112',
-    action: 'Call 112',
-    keywords: 'emergency national helpline 112 police accident ambulance',
-  },
-  {
-    title: 'National Highway Helpline (1033)',
-    sub: 'NHAI 24x7 Breakdown, Towing & Ambulance Support',
-    url: 'tel:1033',
-    action: 'Call 1033',
-    keywords: 'highway helpline 1033 nhai towing breakdown expressway',
-  },
+
+  // 4. Cities
+  ...allDepotSources.flatMap(({ stateId, corp, depots }) =>
+    depots.map((d) => ({
+      category: 'Cities',
+      title: `${d.city[0].toUpperCase() + d.city.slice(1)} (${corp})`,
+      sub: `Transport division hub in ${stateId.replace('-', ' ')}`,
+      url: `/${stateId}/${depotSlug(d.city)}`,
+      action: 'View city',
+      keywords: `${d.city} ${corp} city transport`.toLowerCase(),
+    }))
+  ),
 ];
 
 const stateCodes: Record<string, string> = {
@@ -73,189 +87,357 @@ const stateCodes: Record<string, string> = {
   'gujarat': 'GJ',
 };
 
-const topCorridors = ROUTES.slice(0, 8);
+// Popular 6 routes for homepage display
+const popularRoutes = ROUTES.slice(0, 6);
 ---
 
 <Base title={title} description={description} path="/">
 
-  <!-- Terminal Departure Board Header -->
-  <section class="hero-station-header">
-    <h1 class="page-title">National State Road Transport Directory</h1>
-    <p class="page-lede">
-      Verified inquiry telephone numbers, station master control desks, and intercity bus timetables across Indian State Road Transport Corporations. Sourced directly from official gazetted transport records.
-    </p>
+  <!-- 3. Hero Section with Primary Search (Dark Navy #152339) -->
+  <section class="hero-civic-wrap">
+    <div class="wrap hero-grid">
+      
+      <!-- Left Column: Search & Discovery -->
+      <div>
+        <div class="hero-eyebrow">INDIA’S STATE TRANSPORT DIRECTORY</div>
+        <h1 class="hero-headline">Find the right bus information, without the runaround.</h1>
+        <p class="hero-supporting">
+          Search state transport corporations, bus stations, inquiry numbers and intercity routes across India.
+        </p>
+
+        <!-- Main Accessible Search Field -->
+        <div class="hero-search-container">
+          <div class="hero-search-input-wrap">
+            <svg class="hero-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input
+              type="search"
+              id="national-search-input"
+              class="hero-search-input"
+              placeholder="Search station, route, city or RTC…"
+              aria-label="Search station, route, city or RTC"
+              autocomplete="off"
+              role="combobox"
+              aria-expanded="false"
+              aria-autocomplete="list"
+              aria-controls="search-dropdown-menu"
+            />
+          </div>
+
+          <!-- Categorized Suggestions Dropdown -->
+          <div id="search-dropdown-menu" class="search-dropdown" style="display:none;" role="listbox" aria-label="Search suggestions"></div>
+        </div>
+
+        <!-- Reassurance Metrics Row -->
+        <div class="hero-reassurance-row">
+          <div class="reassurance-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h10"/><path d="M7 12h10"/><path d="M7 17h10"/></svg>
+            <span><strong>128</strong> Divisional Stations</span>
+          </div>
+          <div class="reassurance-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span><strong>70</strong> Intercity Corridors</span>
+          </div>
+          <div class="reassurance-item">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Independent Public Resource</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Today's Quick Reference Panel -->
+      <aside class="hero-quick-reference-panel" aria-label="Today's quick reference">
+        <div class="quick-ref-header">
+          <span class="quick-ref-label">Today’s quick reference</span>
+          <span class="quick-ref-tag">Directory reference</span>
+        </div>
+        <div class="quick-ref-corridor">Delhi ⇄ Agra</div>
+        <div class="quick-ref-operator">UPSRTC Express &amp; Janrath Air-Conditioned Fleet</div>
+
+        <div class="quick-ref-specs">
+          <div class="quick-spec-cell">
+            <div class="quick-spec-label">First Bus</div>
+            <div class="quick-spec-val">05:30</div>
+          </div>
+          <div class="quick-spec-cell">
+            <div class="quick-spec-label">Frequency</div>
+            <div class="quick-spec-val">Every 15–20m</div>
+          </div>
+          <div class="quick-spec-cell">
+            <div class="quick-spec-label">Duration</div>
+            <div class="quick-spec-val">4h 00m</div>
+          </div>
+          <div class="quick-spec-cell">
+            <div class="quick-spec-label">Starting Fare</div>
+            <div class="quick-spec-val" style="color:var(--warm-accent);">₹280</div>
+          </div>
+        </div>
+
+        <a class="btn-quick-action" href="/uttar-pradesh/routes/delhi-to-agra-bus-time-table">
+          <span>View Delhi to Agra Timetable</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </aside>
+
+    </div>
   </section>
 
   <!-- Above-The-Fold Ad Slot -->
-  <AdSlot slotId="8460038937" label="Advertisement" />
+  <div class="wrap" style="margin-top:1.5rem;">
+    <AdSlot slotId="8460038937" label="Advertisement" />
+  </div>
 
-  <!-- Terminal Search & Lookup Board -->
-  <section class="terminal-board" aria-label="Bus station enquiry lookup">
-    <div class="terminal-board-header">
-      <div class="terminal-board-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span>Depot Enquiry &amp; Timetable Terminal</span>
-      </div>
-      <div style="font-size:0.75rem;color:var(--ink-muted);font-variant-numeric:tabular-nums;">
-        128 Divisional Stations · 70 Intercity Corridors
-      </div>
-    </div>
+  <div class="wrap" style="padding-top:2rem;padding-bottom:3rem;">
 
-    <div class="terminal-search-box">
-      <div class="search-input-group">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="search" id="national-search-input" class="search-input" placeholder="Type any station or route (e.g. Lucknow, Swargate, Jaipur, Shimla, Dehradun)..." aria-label="Search all RTC bus stations" autocomplete="off" />
+    <!-- 4. Popular State RTC Cards -->
+    <section aria-labelledby="rtc-heading" style="margin-bottom:3rem;">
+      <div class="section-heading-row">
+        <div>
+          <h2 class="section-title" id="rtc-heading">State Road Transport Corporations</h2>
+          <p class="section-subtitle">Select an RTC to view station master enquiry lines, bus terminals, and divisional offices.</p>
+        </div>
+        <a class="section-link" href="/states">
+          <span>Complete State Directory</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       </div>
-      <div id="search-dropdown-menu" class="search-dropdown" style="display:none;" role="listbox"></div>
-    </div>
 
-    <!-- State Matrix Grid -->
-    <div class="state-selector-matrix">
-      <div class="state-matrix-label">Select State Road Transport Corporation:</div>
-      <div class="state-grid-board">
+      <div class="rtc-grid">
         {stateList.map((s) => {
           const code = stateCodes[s.id] || 'IN';
           const match = allDepotSources.find((src) => src.stateId === s.id);
           const count = match ? match.depots.length : 0;
           return (
-            <a class="state-board-card" href={`/${s.slug}`}>
-              <span class="state-code-badge">{code}</span>
-              <div class="state-board-info">
-                <span class="state-board-name">{s.name}</span>
-                <span class="state-board-corp">{s.corporation}</span>
-                <span class="state-board-count">{count} Divisional Stations · 24x7 Helpline</span>
+            <a class="rtc-card" href={`/${s.slug}`} aria-label={`${s.corporation} ${s.name}`}>
+              <div>
+                <div class="rtc-card-top">
+                  <span class="state-chip">{code}</span>
+                  <svg class="rtc-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                </div>
+                <h3 class="rtc-card-title">{s.corporation}</h3>
+                <div class="rtc-card-state">{s.name}</div>
+              </div>
+              <div class="rtc-card-meta">
+                <span>{count} divisional stations</span>
+                <span style="color:var(--success);font-weight:600;">24×7 helpline</span>
               </div>
             </a>
           );
         })}
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Popular Intercity Schedules Matrix -->
-  <section style="margin:2.5rem 0;" aria-labelledby="top-corridors-heading">
-    <h2 class="section-h2" id="top-corridors-heading">High-Frequency Intercity Timetables</h2>
-    <div class="table-container">
-      <table class="depot-table">
-        <thead>
-          <tr>
-            <th>Route Corridor</th>
-            <th>Operator</th>
-            <th>Frequency</th>
-            <th>First Bus</th>
-            <th>Last Bus</th>
-            <th>Starting Fare</th>
-            <th>Timetable</th>
-          </tr>
-        </thead>
-        <tbody>
-          {topCorridors.map((r) => (
-            <tr>
-              <td class="depot-name-cell">
-                <a href={`/${r.stateId}/routes/${r.slug}`} style="color:var(--ink);text-decoration:none;font-weight:700;">
-                  {r.originCity} ⇄ {r.destinationCity}
-                </a>
-              </td>
-              <td style="font-size:0.85rem;color:var(--transit-amber);font-weight:600;">{r.corporation}</td>
-              <td style="font-size:0.85rem;">{r.frequency}</td>
-              <td class="depot-number-cell">{r.firstBus}</td>
-              <td class="depot-number-cell">{r.lastBus}</td>
-              <td class="depot-number-cell" style="color:var(--transit-green);font-weight:700;">{r.fares[0].price}</td>
-              <td>
-                <a href={`/${r.stateId}/routes/${r.slug}`} class="nav-state-pill" style="font-size:0.75rem;padding:0.25rem 0.5rem;">
-                  Schedule
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </section>
+    <!-- Mid-Content Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
 
-  <!-- Mid-Content Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
-
-  <!-- Emergency & Highway Fast-Dial Strip -->
-  <section style="margin:2rem 0;" aria-labelledby="emergency-strip-heading">
-    <h2 class="section-h2" id="emergency-strip-heading">National Passenger &amp; Highway Emergency Desks</h2>
-    <div class="emergency-matrix-strip">
-      <div class="emergency-matrix-cell">
-        <div class="emergency-matrix-text">
-          <span class="emergency-matrix-label">National Emergency</span>
-          <span class="emergency-matrix-desc">Police, Medical &amp; Fire</span>
+    <!-- 5. Popular Intercity Routes (Mobile-First Cards) -->
+    <section aria-labelledby="routes-heading" style="margin:3rem 0;">
+      <div class="section-heading-row">
+        <div>
+          <h2 class="section-title" id="routes-heading">High-Frequency Intercity Corridors</h2>
+          <p class="section-subtitle">Verified point-to-point departure timetables, operator frequency, and ticket fares.</p>
         </div>
-        <a class="btn-dial" href="tel:112">112</a>
+        <a class="section-link" href="/timetables">
+          <span>All 70 Timetables</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
       </div>
-      <div class="emergency-matrix-cell">
-        <div class="emergency-matrix-text">
-          <span class="emergency-matrix-label">National Highway</span>
-          <span class="emergency-matrix-desc">Breakdown &amp; Towing</span>
-        </div>
-        <a class="btn-dial" href="tel:1033">1033</a>
-      </div>
-      <div class="emergency-matrix-cell">
-        <div class="emergency-matrix-text">
-          <span class="emergency-matrix-label">Women Helpline</span>
-          <span class="emergency-matrix-desc">24x7 Safety Powerline</span>
-        </div>
-        <a class="btn-dial" href="tel:1090">1090</a>
-      </div>
-      <div class="emergency-matrix-cell">
-        <div class="emergency-matrix-text">
-          <span class="emergency-matrix-label">Accident Relief</span>
-          <span class="emergency-matrix-desc">Emergency Road Medical</span>
-        </div>
-        <a class="btn-dial" href="tel:1073">1073</a>
-      </div>
-    </div>
-  </section>
 
-  <!-- Bottom Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored" />
+      <div class="routes-grid">
+        {popularRoutes.map((r) => (
+          <a class="route-card" href={`/${r.stateId}/routes/${r.slug}`}>
+            <div>
+              <div class="route-card-header">
+                <span class="route-card-operator">{r.corporation} Express</span>
+                <span class="route-card-duration">{r.durationHours}</span>
+              </div>
+              <h3 class="route-card-corridor">{r.originCity} ⇄ {r.destinationCity}</h3>
+              <p class="route-card-specs">
+                {r.distanceKm} km · {r.frequency} · First bus {r.firstBus}, last {r.lastBus}
+              </p>
+            </div>
+            <div class="route-card-footer">
+              <span class="route-card-fare">From {r.fares[0].price}</span>
+              <span class="route-card-action">View timetable</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
 
+    <!-- 6. Emergency Assistance Section (Dark Navy #152339 with Coral #FF986F Numbers) -->
+    <section class="emergency-section-wrap" aria-labelledby="emergency-heading">
+      <h2 class="emergency-section-title" id="emergency-heading">National Passenger &amp; Highway Emergency Desks</h2>
+      <p class="emergency-section-desc">
+        Immediate 24×7 telephone helplines for road accidents, police assistance, highway breakdowns, and passenger safety across India.
+      </p>
+
+      <div class="emergency-grid">
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">National Emergency</div>
+            <div class="emergency-card-desc">Police, Medical &amp; Fire Services</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:112" aria-label="Call National Emergency 112">
+            <span class="emergency-number">112</span>
+            <span class="emergency-call-text">Direct Dial</span>
+          </a>
+        </div>
+
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">National Highway Helpline</div>
+            <div class="emergency-card-desc">NHAI Breakdown, Towing &amp; Ambulance</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:1033" aria-label="Call National Highway Helpline 1033">
+            <span class="emergency-number">1033</span>
+            <span class="emergency-call-text">Direct Dial</span>
+          </a>
+        </div>
+
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">Women Powerline</div>
+            <div class="emergency-card-desc">24×7 Passenger Safety &amp; Grievance</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:1090" aria-label="Call Women Powerline 1090">
+            <span class="emergency-number">1090</span>
+            <span class="emergency-call-text">Direct Dial</span>
+          </a>
+        </div>
+
+        <div class="emergency-card">
+          <div>
+            <div class="emergency-card-label">Road Accident Helpline</div>
+            <div class="emergency-card-desc">Emergency Road Relief &amp; Trauma</div>
+          </div>
+          <a class="emergency-tel-btn" href="tel:1073" aria-label="Call Road Accident Helpline 1073">
+            <span class="emergency-number">1073</span>
+            <span class="emergency-call-text">Direct Dial</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Trust & Data-Source Section -->
+    <section class="trust-statement-box" aria-label="About this directory">
+      <h3 class="trust-statement-title">Public Directory &amp; Sourcing Policy</h3>
+      <p class="trust-statement-text">
+        RTC Portal is an independent directory compiled from published transport records. It is not affiliated with government transport departments unless explicitly stated. Verify critical information with the relevant RTC before travelling.
+      </p>
+    </section>
+
+    <!-- Pre-Footer Ad Slot -->
+    <AdSlot slotId="8460038937" label="Sponsored" />
+
+  </div>
+
+  <!-- Search Autocomplete & Keyboard Script -->
   <script define:vars={{ allSearchEntries }}>
     const input = document.getElementById('national-search-input');
     const dropdown = document.getElementById('search-dropdown-menu');
+    let activeIndex = -1;
 
     if (input && dropdown) {
-      input.addEventListener('input', (e) => {
-        const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      function renderMatches(q) {
         if (!q || q.length < 2) {
           dropdown.style.display = 'none';
           dropdown.innerHTML = '';
+          input.setAttribute('aria-expanded', 'false');
+          activeIndex = -1;
           return;
         }
 
-        const matches = allSearchEntries.filter((item) =>
+        const filtered = allSearchEntries.filter((item) =>
           item.keywords.includes(q) || item.title.toLowerCase().includes(q)
-        ).slice(0, 8);
+        );
 
-        if (matches.length === 0) {
+        if (filtered.length === 0) {
           dropdown.innerHTML = `
-            <div style="padding:1rem 1.15rem;font-size:0.88rem;color:var(--ink-muted);text-align:center;">
-              No bus stands matched "<strong>${q}</strong>". Try searching a city name or select a state above.
+            <div style="padding:1.25rem;font-size:0.88rem;color:#718096;text-align:center;">
+              No matches yet. Try a city, route or RTC name.
             </div>
           `;
           dropdown.style.display = 'block';
+          input.setAttribute('aria-expanded', 'true');
+          activeIndex = -1;
           return;
         }
 
-        dropdown.innerHTML = matches.map((m) => `
-          <a class="search-result-item" href="${m.url}">
-            <div>
-              <div class="search-item-title">${m.title}</div>
-              <div class="search-item-sub">${m.sub}</div>
-            </div>
-            <span class="search-item-action">${m.action}</span>
-          </a>
-        `).join('');
+        // Group by category (State RTCs, Bus Stations, Intercity Routes, Cities)
+        const categories = ['State RTCs', 'Bus Stations', 'Intercity Routes', 'Cities'];
+        let html = '';
+
+        categories.forEach((cat) => {
+          const items = filtered.filter((f) => f.category === cat).slice(0, 3);
+          if (items.length > 0) {
+            html += `<div class="search-group-header">${cat}</div>`;
+            items.forEach((item) => {
+              html += `
+                <a class="search-result-item" href="${item.url}" role="option" tabindex="-1">
+                  <div>
+                    <div class="search-item-title">${item.title}</div>
+                    <div class="search-item-sub">${item.sub}</div>
+                  </div>
+                  <span class="search-item-action">${item.action}</span>
+                </a>
+              `;
+            });
+          }
+        });
+
+        dropdown.innerHTML = html;
         dropdown.style.display = 'block';
+        input.setAttribute('aria-expanded', 'true');
+        activeIndex = -1;
+      }
+
+      input.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        renderMatches(q);
       });
 
-      document.addEventListener('click', (ev) => {
-        if (!input.contains(ev.target as Node) && !dropdown.contains(ev.target as Node)) {
+      // Keyboard navigation (ArrowDown, ArrowUp, Enter, Escape)
+      input.addEventListener('keydown', (e) => {
+        const items = dropdown.querySelectorAll('.search-result-item');
+        if (!items.length || dropdown.style.display === 'none') return;
+
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          activeIndex = (activeIndex + 1) % items.length;
+          updateActiveItem(items);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          activeIndex = (activeIndex - 1 + items.length) % items.length;
+          updateActiveItem(items);
+        } else if (e.key === 'Enter') {
+          if (activeIndex >= 0 && items[activeIndex]) {
+            e.preventDefault();
+            items[activeIndex].click();
+          }
+        } else if (e.key === 'Escape') {
           dropdown.style.display = 'none';
+          input.setAttribute('aria-expanded', 'false');
+          activeIndex = -1;
+        }
+      });
+
+      function updateActiveItem(items) {
+        items.forEach((it, idx) => {
+          if (idx === activeIndex) {
+            it.classList.add('selected');
+            it.focus();
+          } else {
+            it.classList.remove('selected');
+          }
+        });
+      }
+
+      // Close on outside click
+      document.addEventListener('click', (ev) => {
+        if (!input.contains(ev.target) && !dropdown.contains(ev.target)) {
+          dropdown.style.display = 'none';
+          input.setAttribute('aria-expanded', 'false');
+          activeIndex = -1;
         }
       });
     }
