@@ -4,11 +4,16 @@ import AdSlot from '../../components/AdSlot.astro';
 import { STATES } from '../../config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
 import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
+import { DEPOTS as RJ_DEPOTS } from '../../data/rajasthan/depots.data.mjs';
+import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
+import { ROUTES } from '../../data/routes.data.mjs';
 
 export function getStaticPaths() {
   const sources = {
     'uttar-pradesh': UP_DEPOTS,
     'maharashtra': MH_DEPOTS,
+    'rajasthan': RJ_DEPOTS,
+    'haryana': HR_DEPOTS,
   };
   return Object.keys(sources).map((stateId) => ({
     params: { state: stateId },
@@ -17,8 +22,8 @@ export function getStaticPaths() {
 }
 
 const { state, depots } = Astro.props;
-const title = `${state.corporation} Bus Station Contact Numbers — All Regional Depots (${state.name})`;
-const description = `Official directory of ${state.corporation} (${state.corporationFull}) bus stand enquiry phone numbers across ${state.name}. Verified phone numbers for all ${depots.length} regional transport divisions & 24x7 passenger helpline.`;
+const title = `${state.corporation} Bus Station Contact Numbers & Timetables — All Depots (${state.name})`;
+const description = `Official directory of ${state.corporation} (${state.corporationFull}) bus stand enquiry phone numbers across ${state.name}. Verified phone numbers for all ${depots.length} regional transport divisions, intercity bus timetables & 24x7 helpline.`;
 const path = `/${state.slug}`;
 
 const breadcrumbs = [
@@ -26,6 +31,32 @@ const breadcrumbs = [
 ];
 
 const totalStands = depots.reduce((acc, d) => acc + d.stands.length, 0);
+const stateRoutes = ROUTES.filter((r) => r.stateId === state.id);
+
+const heroImg =
+  state.id === 'uttar-pradesh'
+    ? '/images/hero-upsrtc.jpg'
+    : state.id === 'maharashtra'
+    ? '/images/hero-msrtc.jpg'
+    : '/images/hero-national.jpg';
+
+const heroTag =
+  state.id === 'uttar-pradesh'
+    ? 'UPSRTC Express Network'
+    : state.id === 'maharashtra'
+    ? 'MSRTC ST Network'
+    : state.id === 'rajasthan'
+    ? 'RSRTC Express Network'
+    : 'Haryana Roadways Network';
+
+const heroSub =
+  state.id === 'uttar-pradesh'
+    ? 'Yamuna & Agra Expressways · Janrath & Platinum Fleet'
+    : state.id === 'maharashtra'
+    ? 'Mumbai-Pune Expressway · Shivshahi & Ashwamedh Fleet'
+    : state.id === 'rajasthan'
+    ? 'Delhi-Jaipur Highway · Volvo & Super Express Fleet'
+    : 'GT Road Corridor · Haryana Shakti & Volvo Fleet';
 
 const jsonLd = [
   {
@@ -60,7 +91,7 @@ const jsonLd = [
 
     <div class="hero-visual-card">
       <img
-        src={state.id === 'uttar-pradesh' ? '/images/hero-upsrtc.jpg' : '/images/hero-msrtc.jpg'}
+        src={heroImg}
         alt={`${state.corporation} (${state.corporationFull}) Regional Express Bus Fleet and Highway Network`}
         class="hero-visual-img"
         width="1400"
@@ -70,14 +101,8 @@ const jsonLd = [
       />
       <div class="hero-visual-overlay">
         <div>
-          <div class="hero-visual-tag">
-            {state.id === 'uttar-pradesh' ? 'UPSRTC Express Network' : 'MSRTC ST Network'}
-          </div>
-          <div class="hero-visual-sub">
-            {state.id === 'uttar-pradesh'
-              ? 'Yamuna & Agra Expressways · Janrath & Platinum Fleet'
-              : 'Mumbai-Pune Expressway · Shivshahi & Ashwamedh Fleet'}
-          </div>
+          <div class="hero-visual-tag">{heroTag}</div>
+          <div class="hero-visual-sub">{heroSub}</div>
         </div>
         <span style="font-size:0.75rem;padding:0.2rem 0.6rem;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border-radius:4px;font-weight:700;">2026 Verified</span>
       </div>
@@ -147,6 +172,40 @@ const jsonLd = [
 
   <!-- Above-The-Fold Ad Slot -->
   <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+  <!-- Popular Intercity Express Bus Routes -->
+  {stateRoutes.length > 0 && (
+    <section aria-labelledby="state-routes-heading" style="margin-bottom:2.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <h2 class="section-h2" id="state-routes-heading" style="margin-bottom:0.25rem;">Popular {state.name} Bus Timetables &amp; Routes</h2>
+          <p style="color:var(--ink-light);font-size:0.9rem;">Direct point-to-point departure schedules, ticket prices, and station enquiry numbers:</p>
+        </div>
+        <a class="nav-pill-btn" href={`/${state.slug}/routes`} style="font-size:0.8rem;">
+          <span>All {state.name} Routes ({stateRoutes.length}) →</span>
+        </a>
+      </div>
+
+      <div class="sibling-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
+        {stateRoutes.map((r) => (
+          <a class="sibling-link" href={`/${state.slug}/routes/${r.slug}`} style="padding:1rem;display:flex;flex-direction:column;justify-content:space-between;">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
+                <span style="font-size:0.75rem;font-weight:700;color:var(--cobalt);text-transform:uppercase;">{r.corporation} Express</span>
+                <span style="font-size:0.72rem;background:var(--emerald-light);color:var(--emerald);padding:0.1rem 0.4rem;border-radius:4px;font-weight:700;">{r.durationHours}</span>
+              </div>
+              <div style="font-size:1.02rem;font-weight:700;color:var(--ink);">{r.originCity} to {r.destinationCity}</div>
+              <div style="font-size:0.8rem;color:var(--ink-light);margin-top:0.25rem;">{r.frequency} · First {r.firstBus}, Last {r.lastBus}</div>
+            </div>
+            <div style="margin-top:0.75rem;padding-top:0.6rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
+              <span style="font-weight:700;color:var(--emerald);">From {r.fares[0].price}</span>
+              <span style="color:var(--cobalt);font-weight:700;">View Timetable →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
 
   <!-- Divisional Directory Grid -->
   <section aria-labelledby="divisions-heading">

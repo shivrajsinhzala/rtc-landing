@@ -3,22 +3,20 @@ import DepotPage from '../../layouts/DepotPage.astro';
 import { STATES } from '../../config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
 import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
+import { DEPOTS as RJ_DEPOTS } from '../../data/rajasthan/depots.data.mjs';
+import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
 
 /**
  * One dynamic route for every state's depot pages. Adding a second state means adding its
  * DEPOTS import and one line in the map inside getStaticPaths below — nothing else changes
  * shape.
- *
- * Everything getStaticPaths needs is computed inside its own body rather than read from a
- * module-scope const — Astro's build-time extraction of getStaticPaths did not reliably see an
- * outer `const DEPOT_SOURCES = {...}` (reproducible: "DEPOT_SOURCES is not defined" at prerender
- * time even though the const was declared above it in the same file), so nothing here is left
- * for that extraction step to fail to capture.
  */
 export function getStaticPaths() {
   const sources = {
     'uttar-pradesh': UP_DEPOTS,
     'maharashtra': MH_DEPOTS,
+    'rajasthan': RJ_DEPOTS,
+    'haryana': HR_DEPOTS,
   };
   const paths = [];
   for (const [stateId, depots] of Object.entries(sources)) {

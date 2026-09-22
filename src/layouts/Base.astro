@@ -52,6 +52,20 @@ const baseJsonLd: unknown[] = [
       },
       {
         '@type': 'ContactPoint',
+        telephone: '1800-2000-103',
+        contactType: 'RSRTC Passenger Helpline',
+        areaServed: 'IN-RJ',
+        availableLanguage: ['Hindi', 'English'],
+      },
+      {
+        '@type': 'ContactPoint',
+        telephone: '1800-180-2345',
+        contactType: 'Haryana Roadways Passenger Helpline',
+        areaServed: 'IN-HR',
+        availableLanguage: ['Hindi', 'English'],
+      },
+      {
+        '@type': 'ContactPoint',
         telephone: '112',
         contactType: 'National All-India Emergency Service',
         areaServed: 'IN',
@@ -143,6 +157,14 @@ const baseJsonLd: unknown[] = [
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
         <span>Maharashtra ST</span>
       </a>
+      <a class="nav-pill-btn" href="/rajasthan">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        <span>RSRTC</span>
+      </a>
+      <a class="nav-pill-btn" href="/haryana">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        <span>Haryana</span>
+      </a>
     </nav>
   </div>
 </header>
@@ -200,8 +222,9 @@ const baseJsonLd: unknown[] = [
       <ul class="footer-links">
         <li><a href="/uttar-pradesh">Uttar Pradesh (UPSRTC)</a></li>
         <li><a href="/maharashtra">Maharashtra (MSRTC)</a></li>
+        <li><a href="/rajasthan">Rajasthan (RSRTC)</a></li>
+        <li><a href="/haryana">Haryana Roadways</a></li>
         <li><a href="https://gsrtc.shivrajsinh.in" target="_blank" rel="noopener">Gujarat (GSRTC Tracker)</a></li>
-        <li><a href="/#states">Rajasthan (RSRTC)</a></li>
         <li><a href="/#states">All States Directory</a></li>
       </ul>
     </div>

@@ -1,0 +1,24 @@
+---
+import RoutePage from '../../../layouts/RoutePage.astro';
+import { STATES } from '../../../config/states.mjs';
+import { ROUTES } from '../../../data/routes.data.mjs';
+
+export function getStaticPaths() {
+  return ROUTES.map((route) => {
+    const siblingRoutes = ROUTES.filter((r) => r.stateId === route.stateId && r.id !== route.id);
+    return {
+      params: { state: route.stateId, slug: route.slug },
+      props: {
+        state: STATES[route.stateId],
+        route,
+        siblingRoutes,
+      },
+    };
+  });
+}
+
+const { state, route, siblingRoutes } = Astro.props;
+const path = `/${state.slug}/routes/${route.slug}`;
+---
+
+<RoutePage route={route} state={state} path={path} siblingRoutes={siblingRoutes} />

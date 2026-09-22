@@ -4,9 +4,12 @@ import AdSlot from '../components/AdSlot.astro';
 import { stateList } from '../config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../data/uttar-pradesh/depots.data.mjs';
 import { DEPOTS as MH_DEPOTS } from '../data/maharashtra/depots.data.mjs';
+import { DEPOTS as RJ_DEPOTS } from '../data/rajasthan/depots.data.mjs';
+import { DEPOTS as HR_DEPOTS } from '../data/haryana/depots.data.mjs';
+import { ROUTES } from '../data/routes.data.mjs';
 
-const title = 'State Road Transport Bus Info — Official RTC Helplines & Depot Directory';
-const description = 'Official all-India directory of State Road Transport Corporation (RTC) bus stand enquiry numbers, regional divisions, and 24x7 passenger helplines. Direct phone access for major interstate and intrastate terminals.';
+const title = 'State Road Transport Bus Info — Official RTC Helplines, Timetables & Depots';
+const description = 'Official all-India directory of State Road Transport Corporation (RTC) bus stand enquiry numbers, intercity bus timetables, ticket fares, and 24x7 passenger helplines across Indian states.';
 
 const upcomingStates = [
   {
@@ -16,14 +19,6 @@ const upcomingStates = [
     link: 'https://gsrtc.shivrajsinh.in',
     isExternal: true,
     status: 'Live on GSRTC Portal',
-  },
-  {
-    name: 'Rajasthan',
-    corporation: 'RSRTC',
-    desc: 'Rajasthan State Road Transport Corporation · Jaipur Sindhi Camp, Jodhpur, Udaipur, Ajmer, Kota and interstate Delhi services.',
-    link: '/#states',
-    isExternal: false,
-    status: 'Directory Indexing',
   },
   {
     name: 'Karnataka',
@@ -36,7 +31,7 @@ const upcomingStates = [
   {
     name: 'Himachal Pradesh',
     corporation: 'HRTC',
-    desc: 'Himachal Road Transport Corporation · Shimla, Manali, Dharamshala, Kangra, Kullu and interstate Delhi ISBT services.',
+    desc: 'Himachal Road Transport Corporation · Shimla ISBT, Manali, Dharamshala, Kangra, Kullu and interstate Delhi ISBT services.',
     link: '/#states',
     isExternal: false,
     status: 'Directory Indexing',
@@ -64,6 +59,33 @@ const allSearchEntries = [
       keywords: `${d.city} ${d.region} ${d.alsoKnownAs || ''} maharashtra msrtc st bus stand station enquiry phone`.toLowerCase(),
     };
   }),
+  ...RJ_DEPOTS.map((d) => {
+    const name = d.region;
+    return {
+      title: `${name} Bus Station Contact Number`,
+      sub: `RSRTC · ${d.stands.length} stands (Primary: ${d.stands[0].numbers[0]})`,
+      url: `/rajasthan/${depotSlug(d.city)}`,
+      action: 'View Numbers →',
+      keywords: `${d.city} ${d.region} rajasthan rsrtc roadways bus stand station enquiry phone`.toLowerCase(),
+    };
+  }),
+  ...HR_DEPOTS.map((d) => {
+    const name = d.region;
+    return {
+      title: `${name} Bus Station Contact Number`,
+      sub: `Haryana Roadways · ${d.stands.length} stands (Primary: ${d.stands[0].numbers[0]})`,
+      url: `/haryana/${depotSlug(d.city)}`,
+      action: 'View Numbers →',
+      keywords: `${d.city} ${d.region} haryana roadways bus stand station enquiry phone`.toLowerCase(),
+    };
+  }),
+  ...ROUTES.map((r) => ({
+    title: `${r.originCity} to ${r.destinationCity} Bus Timetable`,
+    sub: `${r.corporation} Express · ${r.frequency} · Fares from ${r.fares[0].price}`,
+    url: `/${r.stateId}/routes/${r.slug}`,
+    action: 'View Timetable →',
+    keywords: `${r.originCity} ${r.destinationCity} bus time table timings ticket price fare schedule roadways express`.toLowerCase(),
+  })),
   {
     title: 'Uttar Pradesh (UPSRTC) Roadways Directory',
     sub: 'All 20 Transport Divisions & Bus Stands',
@@ -77,6 +99,20 @@ const allSearchEntries = [
     url: '/maharashtra',
     action: 'Open Directory →',
     keywords: 'maharashtra msrtc st bus roadways mumbai pune thane nashik shirdi nagpur kolhapur',
+  },
+  {
+    title: 'Rajasthan (RSRTC) Roadways Directory',
+    sub: 'All 15 Transport Divisions & Sindhi Camp Terminal',
+    url: '/rajasthan',
+    action: 'Open Directory →',
+    keywords: 'rajasthan rsrtc roadways bus stand jaipur jodhpur udaipur ajmer kota bikaner',
+  },
+  {
+    title: 'Haryana Roadways Bus Directory',
+    sub: 'All 15 Transport Divisions & GT Road Terminals',
+    url: '/haryana',
+    action: 'Open Directory →',
+    keywords: 'haryana roadways bus stand gurugram faridabad rohtak panipat ambala hisar karnal',
   },
   {
     title: 'Gujarat (GSRTC) Live Bus Tracker',
@@ -241,31 +277,40 @@ const allSearchEntries = [
     </p>
 
     <div class="state-hub-grid">
-      <!-- Active State 1: Uttar Pradesh -->
-      {stateList.map((s) => (
-        <a class="state-card" href={`/${s.slug}`} style={`border-left: 4px solid ${s.id === 'uttar-pradesh' ? '#1d4ed8' : '#b91c1c'};`}>
-          <div>
-            <span class={`state-card-corp-badge ${s.id === 'uttar-pradesh' ? 'badge-upsrtc' : 'badge-msrtc'}`}>
-              {s.corporation} · {s.name}
-            </span>
-            <h3 class="state-card-name">{s.corporationFull}</h3>
-            <p class="state-card-desc">
-              {s.id === 'uttar-pradesh'
-                ? 'All 20 administrative transport divisions including Lucknow, Kanpur, Agra, Varanasi, Prayagraj, Noida, and Ghaziabad depots.'
-                : 'All 20 major transport divisions including Pune Swargate, Mumbai Central, Thane, Nashik CBS, Shirdi, Nagpur, and Kolhapur depots.'}
-            </p>
-          </div>
-          <div class="state-card-meta">
-            <span class="state-badge-active">Verified Directory Live</span>
-            <span style="color:var(--cobalt);font-weight:700;">Explore Depots →</span>
-          </div>
-        </a>
-      ))}
+      <!-- Active States (UP, Maharashtra, Rajasthan, Haryana) -->
+      {stateList.map((s) => {
+        const borderCol = s.id === 'uttar-pradesh' ? '#1d4ed8' : s.id === 'maharashtra' ? '#b91c1c' : s.id === 'rajasthan' ? '#d97706' : '#15803d';
+        const badgeCls = s.id === 'uttar-pradesh' ? 'badge-upsrtc' : s.id === 'maharashtra' ? 'badge-msrtc' : s.id === 'rajasthan' ? 'badge-rsrtc' : 'badge-hrtc';
+        const desc =
+          s.id === 'uttar-pradesh'
+            ? 'All 20 transport divisions including Lucknow, Kanpur, Agra, Varanasi, Prayagraj, Noida, and Ghaziabad depots.'
+            : s.id === 'maharashtra'
+            ? 'All 20 transport divisions including Pune Swargate, Mumbai Central, Thane, Nashik CBS, Shirdi, and Nagpur depots.'
+            : s.id === 'rajasthan'
+            ? 'All 15 principal RSRTC divisions including Jaipur Sindhi Camp, Jodhpur, Udaipur, Ajmer, Kota, and Bikaner depots.'
+            : 'All 15 key Haryana Roadways divisions including Gurugram, Faridabad, Rohtak, Panipat, Ambala, and Karnal depots.';
+
+        return (
+          <a class="state-card" href={`/${s.slug}`} style={`border-left: 4px solid ${borderCol};`}>
+            <div>
+              <span class={`state-card-corp-badge ${badgeCls}`}>
+                {s.corporation} · {s.name}
+              </span>
+              <h3 class="state-card-name">{s.corporationFull}</h3>
+              <p class="state-card-desc">{desc}</p>
+            </div>
+            <div class="state-card-meta">
+              <span class="state-badge-active">Verified Directory Live</span>
+              <span style="color:var(--cobalt);font-weight:700;">Explore Depots &amp; Routes →</span>
+            </div>
+          </a>
+        );
+      })}
 
       <!-- Upcoming States & Sibling Sister Portals -->
       {upcomingStates.map((u) => {
-        const badgeClass = u.corporation === 'GSRTC' ? 'badge-gsrtc' : u.corporation === 'RSRTC' ? 'badge-rsrtc' : u.corporation === 'KSRTC' ? 'badge-ksrtc' : 'badge-hrtc';
-        const borderColor = u.corporation === 'GSRTC' ? '#059669' : u.corporation === 'RSRTC' ? '#d97706' : u.corporation === 'KSRTC' ? '#7c3aed' : '#16a34a';
+        const badgeClass = u.corporation === 'GSRTC' ? 'badge-gsrtc' : u.corporation === 'KSRTC' ? 'badge-ksrtc' : 'badge-hrtc';
+        const borderColor = u.corporation === 'GSRTC' ? '#059669' : u.corporation === 'KSRTC' ? '#7c3aed' : '#16a34a';
         return (
           <a class="state-card" href={u.link} target={u.isExternal ? '_blank' : undefined} rel={u.isExternal ? 'noopener' : undefined} style={`border-left: 4px solid ${borderColor};`}>
             <div>
@@ -282,6 +327,35 @@ const allSearchEntries = [
           </a>
         );
       })}
+    </div>
+  </section>
+
+  <!-- Popular Intercity Bus Timetables & Schedules Grid -->
+  <section aria-labelledby="popular-routes-heading" style="margin-top:2.5rem;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
+      <div>
+        <h2 class="section-h2" id="popular-routes-heading" style="margin-bottom:0.25rem;">Popular Intercity Bus Timetables &amp; Fares</h2>
+        <p style="color:var(--ink-light);font-size:0.9rem;">Verified departure times, ticket prices, and station enquiry numbers for high-frequency express corridors:</p>
+      </div>
+    </div>
+
+    <div class="sibling-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
+      {ROUTES.slice(0, 8).map((r) => (
+        <a class="sibling-link" href={`/${r.stateId}/routes/${r.slug}`} style="padding:1.1rem;display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
+              <span style="font-size:0.75rem;font-weight:700;color:var(--cobalt);text-transform:uppercase;">{r.corporation}</span>
+              <span style="font-size:0.72rem;background:var(--emerald-light);color:var(--emerald);padding:0.1rem 0.45rem;border-radius:4px;font-weight:700;">{r.durationHours}</span>
+            </div>
+            <div style="font-size:1.05rem;font-weight:700;color:var(--ink);">{r.originCity} to {r.destinationCity}</div>
+            <div style="font-size:0.8rem;color:var(--ink-light);margin-top:0.25rem;">{r.distanceKm} km · {r.frequency} · First {r.firstBus}</div>
+          </div>
+          <div style="margin-top:0.85rem;padding-top:0.6rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
+            <span style="font-weight:700;color:var(--emerald);">Fares from {r.fares[0].price}</span>
+            <span style="color:var(--cobalt);font-weight:700;">View Timetable →</span>
+          </div>
+        </a>
+      ))}
     </div>
   </section>
 

@@ -60,6 +60,30 @@ export const STATES = {
     lang: 'en',
     htmlLang: 'en-IN',
   },
+  'rajasthan': {
+    id: 'rajasthan',
+    slug: 'rajasthan',
+    name: 'Rajasthan',
+    corporation: 'RSRTC',
+    corporationFull: 'Rajasthan State Road Transport Corporation',
+    brand: 'Rajasthan Roadways Bus Info',
+    officialSite: 'https://transport.rajasthan.gov.in/rsrtc',
+    helpline: { primary: '1800-2000-103', label: '24x7 RSRTC passenger helpline' },
+    lang: 'en',
+    htmlLang: 'en-IN',
+  },
+  'haryana': {
+    id: 'haryana',
+    slug: 'haryana',
+    name: 'Haryana',
+    corporation: 'Haryana Roadways',
+    corporationFull: 'Haryana State Transport (Haryana Roadways)',
+    brand: 'Haryana Roadways Bus Info',
+    officialSite: 'https://hartrans.gov.in',
+    helpline: { primary: '1800-180-2345', label: '24x7 Haryana Roadways passenger helpline' },
+    lang: 'en',
+    htmlLang: 'en-IN',
+  },
 };
 
 export const stateList = Object.values(STATES);

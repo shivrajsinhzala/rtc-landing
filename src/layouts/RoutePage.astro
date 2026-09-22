@@ -1,0 +1,325 @@
+---
+import Base from './Base.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+interface RouteFare {
+  type: string;
+  price: string;
+}
+
+interface RouteInfo {
+  id: string;
+  slug: string;
+  stateId: string;
+  corporation: string;
+  originCity: string;
+  destinationCity: string;
+  originDepotSlug: string;
+  originStandName: string;
+  originStandPhone: string;
+  destinationDepotSlug: string;
+  destinationStandName: string;
+  destinationStandPhone: string;
+  distanceKm: number;
+  durationHours: string;
+  highway: string;
+  frequency: string;
+  firstBus: string;
+  lastBus: string;
+  fares: RouteFare[];
+  highlights: string[];
+  description: string;
+}
+
+interface Props {
+  route: RouteInfo;
+  state: { id: string; name: string; corporation: string; slug: string; helpline: { primary: string; label: string }; officialSite?: string };
+  path: string;
+  siblingRoutes: RouteInfo[];
+}
+
+const { route, state, path, siblingRoutes } = Astro.props;
+const {
+  originCity,
+  destinationCity,
+  distanceKm,
+  durationHours,
+  highway,
+  frequency,
+  firstBus,
+  lastBus,
+  fares,
+  highlights,
+  description,
+  originStandName,
+  originStandPhone,
+  destinationStandName,
+  destinationStandPhone,
+  originDepotSlug,
+  destinationDepotSlug,
+} = route;
+
+const tel = (n: string) => n.replace(/[^0-9]/g, '');
+
+const title = `${originCity} to ${destinationCity} Bus Timetable, Ticket Price & Schedule — ${route.corporation}`;
+const metaDesc = `Official ${route.corporation} ${originCity} to ${destinationCity} bus schedule: First bus departs at ${firstBus}, last bus at ${lastBus}. Distance ${distanceKm} km (${durationHours}). Ticket fares from ${fares[0].price}. Station enquiry numbers & booking details.`;
+
+const breadcrumbs = [
+  { label: state.name, href: `/${state.slug}` },
+  { label: 'Routes', href: `/${state.slug}/routes` },
+  { label: `${originCity} to ${destinationCity}`, href: path },
+];
+
+const faqs = [
+  {
+    q: `What is the bus timing from ${originCity} to ${destinationCity}?`,
+    a: `${route.corporation} buses on the ${originCity} to ${destinationCity} route operate at a frequency of ${frequency}. The first bus departs ${originCity} at ${firstBus}, and the final scheduled night service departs at ${lastBus}.`,
+  },
+  {
+    q: `How much is the bus ticket price from ${originCity} to ${destinationCity}?`,
+    a: `Ticket fares start from ${fares[0].price} for ${fares[0].type} services, and range up to ${fares[fares.length - 1].price} for ${fares[fares.length - 1].type}. Exact fares depend on the service class and seating configuration chosen.`,
+  },
+  {
+    q: `What is the road distance and travel time from ${originCity} to ${destinationCity}?`,
+    a: `The total driving distance between ${originCity} and ${destinationCity} is approximately ${distanceKm} km via ${highway}. The average bus journey time takes ${durationHours} depending on road traffic.`,
+  },
+  {
+    q: `Which bus stand in ${originCity} does the bus depart from, and who can I call?`,
+    a: `Major departures operate from ${originStandName}. For live platform allocations and departure confirmations, commuters can call the station enquiry counter directly at ${originStandPhone} or the 24x7 state customer helpline at ${state.helpline.primary}.`,
+  },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: title,
+    description: metaDesc,
+    url: `https://rtc.shivrajsinh.in${path}`,
+    about: {
+      '@type': 'TouristTrip',
+      name: `${originCity} to ${destinationCity} Bus Route`,
+      description: `${route.corporation} intercity bus service connecting ${originCity} and ${destinationCity}`,
+      touristType: 'Public Transit Passenger',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rtc.shivrajsinh.in/' },
+      { '@type': 'ListItem', position: 2, name: state.name, item: `https://rtc.shivrajsinh.in/${state.slug}` },
+      { '@type': 'ListItem', position: 3, name: 'Routes', item: `https://rtc.shivrajsinh.in/${state.slug}/routes` },
+      { '@type': 'ListItem', position: 4, name: `${originCity} to ${destinationCity}`, item: `https://rtc.shivrajsinh.in${path}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.a,
+      },
+    })),
+  },
+];
+---
+
+<Base title={title} description={metaDesc} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
+
+  <!-- Route Hero Header -->
+  <section class="page-hero">
+    <div class="badge-official">{route.corporation} Intercity Schedule · {state.name}</div>
+    <h1 class="page-title">{originCity} to {destinationCity} Bus Timetable &amp; Fares</h1>
+    <p class="page-lede">
+      Official schedule, ticket prices, departure frequency, and station counter enquiry phone numbers for <strong>{route.corporation}</strong> buses between <strong>{originCity}</strong> and <strong>{destinationCity}</strong>.
+    </p>
+
+    <!-- Route Quick Spec Strip -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:0.75rem;margin:1.5rem 0 0.5rem;">
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0.75rem 0.9rem;box-shadow:var(--shadow-sm);">
+        <div style="font-size:0.72rem;color:var(--ink-light);text-transform:uppercase;font-weight:700;">Distance</div>
+        <div style="font-size:1.15rem;font-weight:800;color:var(--ink);">{distanceKm} km</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0.75rem 0.9rem;box-shadow:var(--shadow-sm);">
+        <div style="font-size:0.72rem;color:var(--ink-light);text-transform:uppercase;font-weight:700;">Duration</div>
+        <div style="font-size:1.15rem;font-weight:800;color:var(--ink);">{durationHours}</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0.75rem 0.9rem;box-shadow:var(--shadow-sm);">
+        <div style="font-size:0.72rem;color:var(--ink-light);text-transform:uppercase;font-weight:700;">Frequency</div>
+        <div style="font-size:1.05rem;font-weight:800;color:var(--cobalt);">{frequency}</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0.75rem 0.9rem;box-shadow:var(--shadow-sm);">
+        <div style="font-size:0.72rem;color:var(--ink-light);text-transform:uppercase;font-weight:700;">First Bus</div>
+        <div style="font-size:1.15rem;font-weight:800;color:var(--ink);">{firstBus}</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:0.75rem 0.9rem;box-shadow:var(--shadow-sm);">
+        <div style="font-size:0.72rem;color:var(--ink-light);text-transform:uppercase;font-weight:700;">Last Bus</div>
+        <div style="font-size:1.15rem;font-weight:800;color:var(--ink);">{lastBus}</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1-Tap Direct Terminal Call Cards -->
+  <section style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1rem;margin:1.5rem 0 2rem;" aria-label="Terminal Enquiry Counter Phone Numbers">
+    <!-- Boarding Terminal Card -->
+    <div class="action-card" style="margin:0;border-left-color:var(--cobalt);">
+      <div class="action-card-header">
+        <span class="action-card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+          <span>Boarding Station ({originCity})</span>
+        </span>
+        <span class="action-card-subtitle">Departure Enquiry</span>
+      </div>
+      <p style="font-size:0.85rem;color:var(--ink-muted);margin-bottom:0.75rem;">
+        <strong>{originStandName}</strong>
+      </p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a class="btn-call" href={`tel:${tel(originStandPhone)}`} style="padding:0.6rem 0.9rem;font-size:0.82rem;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Call Desk: {originStandPhone}</span>
+        </a>
+        <a class="btn-call secondary" href={`/${state.slug}/${originDepotSlug}`} style="padding:0.6rem 0.9rem;font-size:0.82rem;">
+          <span>View Depot →</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Arrival Terminal Card -->
+    <div class="action-card" style="margin:0;border-left-color:var(--emerald);">
+      <div class="action-card-header">
+        <span class="action-card-title">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          <span>Arrival Station ({destinationCity})</span>
+        </span>
+        <span class="action-card-subtitle">Destination Enquiry</span>
+      </div>
+      <p style="font-size:0.85rem;color:var(--ink-muted);margin-bottom:0.75rem;">
+        <strong>{destinationStandName}</strong>
+      </p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <a class="btn-call" href={`tel:${tel(destinationStandPhone)}`} style="padding:0.6rem 0.9rem;font-size:0.82rem;background:var(--emerald);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Call Desk: {destinationStandPhone}</span>
+        </a>
+        {destinationDepotSlug ? (
+          <a class="btn-call secondary" href={`/${state.slug}/${destinationDepotSlug}`} style="padding:0.6rem 0.9rem;font-size:0.82rem;">
+            <span>View Depot →</span>
+          </a>
+        ) : null}
+      </div>
+    </div>
+  </section>
+
+  <!-- Above-The-Fold Ad Slot -->
+  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+  <!-- Bus Ticket Fare & Class Breakdown Table -->
+  <section aria-labelledby="fare-table-heading">
+    <h2 class="section-h2" id="fare-table-heading">{originCity} to {destinationCity} Bus Ticket Prices &amp; Categories</h2>
+    <p style="color:var(--ink-light);font-size:0.9rem;margin-bottom:1rem;">
+      Estimated fare breakdown across service tiers operated by {route.corporation} on this corridor:
+    </p>
+
+    <div class="table-container">
+      <table class="depot-table">
+        <thead>
+          <tr>
+            <th scope="col">Service Category</th>
+            <th scope="col">Estimated One-Way Fare</th>
+            <th scope="col">Seating &amp; Comfort Class</th>
+            <th scope="col">Official Booking</th>
+          </tr>
+        </thead>
+        <tbody>
+          {fares.map((f) => (
+            <tr>
+              <td class="depot-name-cell">
+                <strong>{f.type}</strong>
+              </td>
+              <td class="depot-number-cell">
+                <span style="font-size:1.1rem;font-weight:800;color:var(--emerald);">{f.price}</span>
+              </td>
+              <td style="font-size:0.85rem;color:var(--ink-muted);">
+                {f.type.toLowerCase().includes('volvo') || f.type.toLowerCase().includes('platinum')
+                  ? 'AC 2x2 Pushback, Charging Port, High-Speed Expressway'
+                  : f.type.toLowerCase().includes('janrath') || f.type.toLowerCase().includes('shivshahi')
+                  ? 'AC 3x2 / 2x2 Air-Suspension Coach'
+                  : 'Standard 3x2 Express Seating'}
+              </td>
+              <td>
+                <a class="nav-pill-btn" href={state.officialSite || '#'} target="_blank" rel="noopener noreferrer">
+                  Book Online ↗
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Mid-Content Ad Slot -->
+  <AdSlot slotId="8460038937" label="Advertisement" />
+
+  <!-- Corridor Overview & Travel Guide -->
+  <section style="margin:2.5rem 0;">
+    <h2 class="section-h2">Highway Corridor &amp; Travel Guidelines</h2>
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-sm);">
+      <p style="color:var(--ink-muted);font-size:0.95rem;line-height:1.7;margin-bottom:1rem;">
+        {description}
+      </p>
+      <div style="border-top:1px solid var(--line);padding-top:1rem;">
+        <h3 style="font-size:0.95rem;font-weight:700;color:var(--ink);margin-bottom:0.5rem;">Key Route Highlights:</h3>
+        <ul style="padding-left:1.25rem;color:var(--ink-muted);font-size:0.88rem;display:flex;flex-direction:column;gap:0.35rem;">
+          {highlights.map((h) => (
+            <li>{h}</li>
+          ))}
+          <li><strong>Highway Route:</strong> Operated primarily along {highway}.</li>
+          <li><strong>Grievance &amp; Breakdown Helpline:</strong> In case of emergency or coach breakdown on this route, dial {state.helpline.primary} or the National Highway Helpline at 1033.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Programmatic FAQ Section -->
+  <section class="faq-section" aria-labelledby="faq-heading">
+    <h2 class="section-h2" id="faq-heading">Frequently Asked Questions ({originCity} to {destinationCity} Bus)</h2>
+    <div class="faq-group">
+      {faqs.map((f) => (
+        <details class="faq-item">
+          <summary>{f.q}</summary>
+          <div class="faq-answer">
+            <p>{f.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Pre-Footer Ad Slot -->
+  <AdSlot slotId="8460038937" label="Sponsored" />
+
+  <!-- Sibling Route Mesh (Zero Orphan Links) -->
+  {siblingRoutes.length > 0 && (
+    <section class="sibling-mesh" aria-labelledby="other-routes-heading">
+      <h2 class="section-h2" id="other-routes-heading" style="font-size:1.1rem;margin-bottom:0.4rem;">
+        Other Popular {state.name} Bus Timetables &amp; Routes
+      </h2>
+      <p style="color:var(--ink-light);font-size:0.85rem;">Check bus timings, fares, and depot enquiry desks for connected destinations:</p>
+      <ul class="sibling-grid">
+        {siblingRoutes.map((r) => (
+          <li>
+            <a class="sibling-link" href={`/${state.slug}/routes/${r.slug}`}>
+              {r.originCity} to {r.destinationCity} Bus Timetable &amp; Fares →
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+</Base>

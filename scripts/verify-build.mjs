@@ -11,10 +11,15 @@ import { fileURLToPath } from 'node:url';
 import { STATES } from '../src/config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../src/data/uttar-pradesh/depots.data.mjs';
 import { DEPOTS as MH_DEPOTS } from '../src/data/maharashtra/depots.data.mjs';
+import { DEPOTS as RJ_DEPOTS } from '../src/data/rajasthan/depots.data.mjs';
+import { DEPOTS as HR_DEPOTS } from '../src/data/haryana/depots.data.mjs';
+import { ROUTES } from '../src/data/routes.data.mjs';
 
 const DEPOT_SOURCES = {
   'uttar-pradesh': UP_DEPOTS,
   'maharashtra': MH_DEPOTS,
+  'rajasthan': RJ_DEPOTS,
+  'haryana': HR_DEPOTS,
 };
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
@@ -47,8 +52,7 @@ for (const [stateId, depots] of Object.entries(DEPOT_SOURCES)) {
   if (!stateIssues) pass(`${stateId}: all ${depots.length} depot pages carry their numbers and are linked from the hub`);
 }
 
-// Every depot page must be reachable from at least one other page besides the hub (siblings),
-// matching the near-orphan fix applied to gsrtc-landing's depot pages.
+// Every depot page must be reachable from at least one other page besides the hub (siblings)
 for (const [stateId, depots] of Object.entries(DEPOT_SOURCES)) {
   const inbound = new Map(depots.map((d) => [d.city, 0]));
   for (const d of depots) {
@@ -64,6 +68,28 @@ for (const [stateId, depots] of Object.entries(DEPOT_SOURCES)) {
   if (orphans.length) fail(`${stateId}: ${orphans.length} depot page(s) with no sibling inbound link: ${orphans.map(([c]) => c).join(', ')}`);
   else pass(`${stateId}: every depot page has at least one sibling inbound link`);
 }
+
+// Verify all 30 route pages
+let routeIssues = 0;
+for (const r of ROUTES) {
+  const routePath = `/${r.stateId}/routes/${r.slug}`;
+  const routeFile = fileFor(routePath);
+  if (!fs.existsSync(routeFile)) { fail(`${routePath} did not build`); routeIssues++; continue; }
+  const html = fs.readFileSync(routeFile, 'utf8');
+  if (!html.includes(`tel:${digits(r.originStandPhone)}`)) {
+    fail(`${routePath} does not carry origin station phone tel:${digits(r.originStandPhone)}`);
+    routeIssues++;
+  }
+  const routesIndexFile = fileFor(`/${r.stateId}/routes`);
+  if (fs.existsSync(routesIndexFile)) {
+    const indexHtml = fs.readFileSync(routesIndexFile, 'utf8');
+    if (!indexHtml.includes(routePath)) {
+      fail(`Routes index /${r.stateId}/routes does not link to ${routePath}`);
+      routeIssues++;
+    }
+  }
+}
+if (!routeIssues) pass(`routes: all ${ROUTES.length} intercity bus route pages carry their numbers and are linked from state route directories`);
 
 console.log(failures ? `\n${failures} check(s) failed.` : '\nAll checks passed.');
 process.exit(failures ? 1 : 0);
