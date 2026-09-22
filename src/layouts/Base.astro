@@ -1,0 +1,105 @@
+---
+import { SITE } from '../config/states.mjs';
+
+/**
+ * The shared shell every page renders through — state-agnostic on purpose. Nothing in here
+ * says "Uttar Pradesh" or "UPSRTC"; every page passes its own title, description and state
+ * object in, so a second state is a data file, not a second layout.
+ *
+ * Reuses the same publisher id as gsrtc.shivrajsinh.in — one AdSense account can serve
+ * multiple sites, but THIS DOMAIN STILL NEEDS TO BE ADDED AND VERIFIED in the AdSense dashboard,
+ * and carry its own ads.txt (see public/ads.txt), before any ad unit here can earn anything.
+ * Nothing renders here assumes that step is done.
+ */
+interface Props {
+  title: string;
+  description: string;
+  /** Path with leading slash, e.g. '/uttar-pradesh/agra-bus-station-contact-number'. */
+  path: string;
+  jsonLd?: unknown[];
+  htmlLang?: string;
+}
+
+const { title, description, path, jsonLd = [], htmlLang = 'en-IN' } = Astro.props;
+const AD_CLIENT = 'ca-pub-7164999486301748';
+const canonical = `${SITE}${path}`;
+---
+
+<!doctype html>
+<html lang={htmlLang} data-theme="auto">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="google-adsense-account" content={AD_CLIENT} />
+<script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`} crossorigin="anonymous"></script>
+
+<link rel="canonical" href={canonical} />
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content={canonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta name="theme-color" content="#12203a" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f7f8fb" media="(prefers-color-scheme: light)" />
+
+{jsonLd.map((block) => (
+  <script type="application/ld+json" set:html={JSON.stringify(block)} />
+))}
+
+<style>
+  :root { --ink:#12203a; --ink-2:#4b5768; --bg:#f7f8fb; --card:#fff; --line:#e4e7ee; --accent:#1a56db; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#f2f5fb; --ink-2:#aab3c5; --bg:#0d1424; --card:#161f33; --line:#232e47; --accent:#5b9dff; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,sans-serif; }
+  .wrap { max-width:760px; margin:0 auto; padding:0 1.1rem; }
+  header.site { border-bottom:1px solid var(--line); padding:1rem 0; }
+  header.site a { color:var(--ink); text-decoration:none; font-weight:700; }
+  main { padding:2rem 0 3rem; }
+  h1 { font-size:1.7rem; line-height:1.25; margin:0 0 .6rem; }
+  h2 { font-size:1.2rem; margin:2rem 0 .6rem; }
+  p { color:var(--ink-2); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1.2rem; margin:1.4rem 0; }
+  .call-btns { display:flex; flex-wrap:wrap; gap:.6rem; margin:.8rem 0; }
+  .call-btns a { background:var(--accent); color:#fff; padding:.55rem 1rem; border-radius:8px; text-decoration:none; font-weight:600; font-size:.95rem; }
+  table { width:100%; border-collapse:collapse; margin:1rem 0; }
+  th,td { text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--line); font-size:.95rem; }
+  th { color:var(--ink-2); font-weight:600; }
+  ul.plain { list-style:none; padding:0; margin:0; }
+  ul.plain li { padding:.4rem 0; border-bottom:1px solid var(--line); }
+  ul.plain a { color:var(--accent); text-decoration:none; }
+  .ad-slot-wrap { margin:1.6rem auto; max-width:760px; text-align:center; }
+  .ad-slot-wrap[hidden], .ad-slot-wrap:empty { display:none; }
+  .ad-label { color:var(--ink-2); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; margin:0 0 .4rem; }
+  footer.site { border-top:1px solid var(--line); padding:1.4rem 0; color:var(--ink-2); font-size:.85rem; }
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">RTC Bus Info</a></div></header>
+<main class="wrap"><slot /></main>
+<footer class="site"><div class="wrap">
+  <p>Independent, ad-supported. Not affiliated with or endorsed by any state transport corporation named on this site.</p>
+</div></footer>
+<script>
+  /*
+   * One manual slot per page today, so pushing on width alone is safe. It stops being safe the
+   * moment Auto Ads is turned on for this domain or a second manual slot is added to a page —
+   * `push({})` binds to the next unprocessed `ins.adsbygoogle` in DOCUMENT ORDER, not the one
+   * next to this script, and gsrtc.shivrajsinh.in lost both its homepage ad units to exactly
+   * this for weeks before it was caught (src/scripts/site.js in that repo has the fix and the
+   * full postmortem). Port that fix here before enabling Auto Ads or a second slot on any page.
+   */
+  document.querySelectorAll('ins.adsbygoogle').forEach((slot) => {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (slot.getBoundingClientRect().width > 0) {
+        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
+      }
+    }));
+  });
+</script>
+</body>
+</html>

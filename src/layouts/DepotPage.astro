@@ -1,0 +1,75 @@
+---
+import Base from './Base.astro';
+
+/**
+ * Renders one region's contact-number page. State-agnostic — every word of copy is built from
+ * props, so this file does not change when a second state is added; only the data does.
+ */
+interface Stand { label: string; numbers: string[]; }
+interface Props {
+  state: { name: string; corporation: string; slug: string; helpline: { primary: string; label: string } };
+  depot: { city: string; region: string; alsoKnownAs?: string; stands: Stand[] };
+  cityName: string;
+  path: string;
+  siblingLinks: { href: string; label: string }[];
+  hubHref: string;
+}
+const { state, depot, cityName, path, siblingLinks, hubHref } = Astro.props;
+const { stands } = depot;
+const multi = stands.length > 1;
+const tel = (n: string) => n.replace(/[^0-9]/g, '');
+const alias = depot.alsoKnownAs ? ` (division HQ, also called ${depot.alsoKnownAs})` : '';
+
+const title = `${cityName} Bus Station Contact Number — ${state.corporation}`;
+const description = `${cityName} bus station enquiry number${multi ? 's' : ''}: ${stands[0].numbers[0]}. ${state.corporation} contact for ${cityName}, official source, plus the statewide helpline.`;
+
+const jsonLd = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  description,
+  about: { '@type': 'Place', name: `${cityName}, ${state.name}` },
+}];
+---
+<Base title={title} description={description} path={path} jsonLd={jsonLd}>
+  <p><a href={hubHref}>&larr; All {state.name} bus stations</a></p>
+  <h1>{cityName} bus station contact number{multi ? 's' : ''}</h1>
+  <p>The {state.corporation} enquiry number{multi ? 's' : ''} for {cityName}{alias}, sourced from
+    the corporation's own official directory, plus the statewide helpline to try if a local
+    line does not answer.</p>
+
+  <div class="card">
+    <p style="margin:0 0 .6rem;font-weight:600;">Tap to call</p>
+    <div class="call-btns">
+      {stands.flatMap((s) => s.numbers).slice(0, 4).map((n) => (
+        <a href={`tel:${tel(n)}`}>Call {n}</a>
+      ))}
+    </div>
+  </div>
+
+  <h2>{cityName} bus station{multi ? 's' : ''}</h2>
+  <table>
+    <tr><th>Bus station</th><th>Enquiry number</th></tr>
+    {stands.map((s) => (
+      <tr><td>{s.label}</td><td>{s.numbers.map((n) => <a href={`tel:${tel(n)}`}>{n}</a>).reduce((a, b) => <>{a} / {b}</>)}</td></tr>
+    ))}
+  </table>
+
+  <h2>If the line does not answer</h2>
+  <p>{state.helpline.label} covers every station in {state.name}:
+    <a href={`tel:${tel(state.helpline.primary)}`}>{state.helpline.primary}</a>.</p>
+
+  {siblingLinks.length > 0 && (
+    <>
+      <h2>Other {state.name} bus stations</h2>
+      <ul class="plain">
+        {siblingLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+      </ul>
+    </>
+  )}
+
+  <div class="ad-slot-wrap">
+    <p class="ad-label">Advertisement</p>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7164999486301748" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </div>
+</Base>

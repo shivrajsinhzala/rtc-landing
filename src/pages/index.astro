@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import { stateList } from '../config/states.mjs';
+
+/**
+ * The domain root. Lists every state this site covers — right now, one. This is what gives
+ * the second state's pages an inbound link from day one instead of relying on search alone,
+ * and it is the page that should eventually carry the site's own head-term copy once there is
+ * more than one state to make that copy honest.
+ */
+const title = 'State Road Transport Bus Info — Official Contact Numbers by State';
+const description = 'Official state road transport corporation bus station contact numbers, by state. Sourced from each corporation\'s own published directory.';
+---
+<Base title={title} description={description} path="/">
+  <h1>State road transport bus info</h1>
+  <p>Official bus station contact numbers, sourced from each state transport corporation's own
+    published directory. Pick a state:</p>
+  <ul class="plain">
+    {stateList.map((s) => <li><a href={`/${s.slug}`}>{s.name} ({s.corporation})</a></li>)}
+  </ul>
+</Base>

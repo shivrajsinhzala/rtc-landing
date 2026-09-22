@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import { STATES } from '../../config/states.mjs';
+import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
+
+export function getStaticPaths() {
+  const sources = { 'uttar-pradesh': UP_DEPOTS };
+  return Object.keys(sources).map((stateId) => ({
+    params: { state: stateId },
+    props: { state: STATES[stateId], depots: sources[stateId] },
+  }));
+}
+
+const { state, depots } = Astro.props;
+const title = `${state.corporation} Bus Station Contact Numbers — ${state.name}`;
+const description = `Official ${state.corporation} bus station enquiry numbers across ${state.name}, sourced from ${state.corporation}'s own directory, plus the statewide helpline.`;
+const path = `/${state.slug}`;
+
+const jsonLd = [{
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: title,
+  description,
+  about: { '@type': 'Place', name: state.name },
+}];
+---
+<Base title={title} description={description} path={path} jsonLd={jsonLd}>
+  <h1>{state.corporation} bus station contact numbers</h1>
+  <p>Official enquiry numbers for {state.corporation} ({state.corporationFull}) bus stations
+    across {state.name}, sourced directly from the corporation's own published directory —
+    not a copied or guessed list. Tap a region below for its stations, or call the statewide
+    helpline directly.</p>
+
+  <div class="card">
+    <p style="margin:0 0 .5rem;font-weight:600;">{state.helpline.label}</p>
+    <div class="call-btns">
+      <a href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>Call {state.helpline.primary}</a>
+    </div>
+  </div>
+
+  <h2>Bus stations by region</h2>
+  <ul class="plain">
+    {depots.map((d) => {
+      const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
+      return <li><a href={`/${state.slug}/${depotSlug(d.city)}`}>{name} bus station contact number</a></li>;
+    })}
+  </ul>
+
+  <div class="ad-slot-wrap">
+    <p class="ad-label">Advertisement</p>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7164999486301748" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </div>
+</Base>

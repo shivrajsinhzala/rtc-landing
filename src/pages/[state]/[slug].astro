@@ -1,0 +1,40 @@
+---
+import DepotPage from '../../layouts/DepotPage.astro';
+import { STATES } from '../../config/states.mjs';
+import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
+
+/**
+ * One dynamic route for every state's depot pages. Adding a second state means adding its
+ * DEPOTS import and one line in the map inside getStaticPaths below — nothing else changes
+ * shape.
+ *
+ * Everything getStaticPaths needs is computed inside its own body rather than read from a
+ * module-scope const — Astro's build-time extraction of getStaticPaths did not reliably see an
+ * outer `const DEPOT_SOURCES = {...}` (reproducible: "DEPOT_SOURCES is not defined" at prerender
+ * time even though the const was declared above it in the same file), so nothing here is left
+ * for that extraction step to fail to capture.
+ */
+export function getStaticPaths() {
+  const sources = { 'uttar-pradesh': UP_DEPOTS };
+  const paths = [];
+  for (const [stateId, depots] of Object.entries(sources)) {
+    depots.forEach((depot, i) => {
+      const siblings = [depots[(i - 1 + depots.length) % depots.length], depots[(i + 1) % depots.length]];
+      paths.push({
+        params: { state: stateId, slug: depotSlug(depot.city) },
+        props: { state: STATES[stateId], depot, siblings },
+      });
+    });
+  }
+  return paths;
+}
+
+const { state, depot, siblings } = Astro.props;
+const cityName = depot.alsoKnownAs ? depot.region : depot.city[0].toUpperCase() + depot.city.slice(1);
+const path = `/${state.slug}/${depotSlug(depot.city)}`;
+const siblingLinks = siblings.map((s) => ({
+  href: `/${state.slug}/${depotSlug(s.city)}`,
+  label: `${s.alsoKnownAs ? s.region : s.city[0].toUpperCase() + s.city.slice(1)} bus station contact number`,
+}));
+---
+<DepotPage state={state} depot={depot} cityName={cityName} path={path} siblingLinks={siblingLinks} hubHref={`/${state.slug}`} />
