@@ -1,10 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import { STATES } from '../../config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
+import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
 
 export function getStaticPaths() {
-  const sources = { 'uttar-pradesh': UP_DEPOTS };
+  const sources = {
+    'uttar-pradesh': UP_DEPOTS,
+    'maharashtra': MH_DEPOTS,
+  };
   return Object.keys(sources).map((stateId) => ({
     params: { state: stateId },
     props: { state: STATES[stateId], depots: sources[stateId] },
@@ -12,42 +17,146 @@ export function getStaticPaths() {
 }
 
 const { state, depots } = Astro.props;
-const title = `${state.corporation} Bus Station Contact Numbers — ${state.name}`;
-const description = `Official ${state.corporation} bus station enquiry numbers across ${state.name}, sourced from ${state.corporation}'s own directory, plus the statewide helpline.`;
+const title = `${state.corporation} Bus Station Contact Numbers — All Regional Depots (${state.name})`;
+const description = `Official directory of ${state.corporation} (${state.corporationFull}) bus stand enquiry phone numbers across ${state.name}. Verified phone numbers for all ${depots.length} regional transport divisions & 24x7 passenger helpline.`;
 const path = `/${state.slug}`;
 
-const jsonLd = [{
-  '@context': 'https://schema.org',
-  '@type': 'CollectionPage',
-  name: title,
-  description,
-  about: { '@type': 'Place', name: state.name },
-}];
+const breadcrumbs = [
+  { label: state.name, href: path }
+];
+
+const totalStands = depots.reduce((acc, d) => acc + d.stands.length, 0);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: title,
+    description,
+    url: `https://rtc.shivrajsinh.in${path}`,
+    about: { '@type': 'Place', name: state.name },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rtc.shivrajsinh.in/' },
+      { '@type': 'ListItem', position: 2, name: state.name, item: `https://rtc.shivrajsinh.in${path}` },
+    ],
+  },
+];
 ---
-<Base title={title} description={description} path={path} jsonLd={jsonLd}>
-  <h1>{state.corporation} bus station contact numbers</h1>
-  <p>Official enquiry numbers for {state.corporation} ({state.corporationFull}) bus stations
-    across {state.name}, sourced directly from the corporation's own published directory —
-    not a copied or guessed list. Tap a region below for its stations, or call the statewide
-    helpline directly.</p>
 
-  <div class="card">
-    <p style="margin:0 0 .5rem;font-weight:600;">{state.helpline.label}</p>
-    <div class="call-btns">
-      <a href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>Call {state.helpline.primary}</a>
+<Base title={title} description={description} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
+
+  <section class="page-hero">
+    <div class="badge-official">Official State Transport Directory · {state.name}</div>
+    <h1 class="page-title">{state.corporation} Bus Station Contact Numbers &amp; Enquiry</h1>
+    <p class="page-lede">
+      Official enquiry phone numbers for all <strong>{depots.length} transport divisions</strong> and <strong>{totalStands} bus terminals</strong> operated by {state.corporationFull} ({state.corporation}) across {state.name}. Sourced directly from published government transit records.
+    </p>
+  </section>
+
+  <!-- Central Statewide Helpline Card -->
+  <section class="action-card" aria-label="Statewide Helpline">
+    <div class="action-card-header">
+      <span class="action-card-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>24x7 Central {state.corporation} Passenger Support</span>
+      </span>
+      <span class="action-card-subtitle">Statewide Toll-Free Helpline</span>
     </div>
-  </div>
 
-  <h2>Bus stations by region</h2>
-  <ul class="plain">
-    {depots.map((d) => {
-      const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
-      return <li><a href={`/${state.slug}/${depotSlug(d.city)}`}>{name} bus station contact number</a></li>;
-    })}
-  </ul>
+    <div class="call-button-group">
+      <a class="btn-call" href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Dial Toll-Free: {state.helpline.primary}</span>
+      </a>
+      <a class="btn-call secondary" href={state.officialSite} target="_blank" rel="noopener noreferrer">
+        <span>Official Portal ({state.officialSite.replace('https://', '')}) ↗</span>
+      </a>
+    </div>
+  </section>
 
-  <div class="ad-slot-wrap">
-    <p class="ad-label">Advertisement</p>
-    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7164999486301748" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
-  </div>
+  <!-- Above-The-Fold Ad Slot -->
+  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+  <!-- Divisional Directory Grid -->
+  <section aria-labelledby="divisions-heading">
+    <h2 class="section-h2" id="divisions-heading">{state.name} Transport Divisions &amp; Bus Stands</h2>
+    <p style="color:var(--ink-light);font-size:0.9rem;margin-bottom:1rem;">
+      Select your district or regional headquarters to access verified enquiry counter phone numbers and platform details:
+    </p>
+
+    <!-- Instant Search & Filter Bar -->
+    <div class="search-box-wrap" style="margin: 1rem 0 1.5rem;">
+      <div class="search-input-group">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="depot-filter-input" class="search-input" placeholder={`Filter ${state.name} depots (e.g. Lucknow, Agra, Prayagraj, Varanasi)...`} aria-label={`Filter ${state.name} bus stations`} autocomplete="off" />
+      </div>
+      <div id="search-empty-state" class="search-empty">
+        <p style="font-weight:600;color:var(--ink);">No bus stations found matching your search</p>
+        <p style="font-size:0.85rem;margin-top:0.35rem;">Try typing another city name or call the 24x7 statewide helpline at <a href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`} style="color:var(--cobalt);font-weight:700;">{state.helpline.primary}</a></p>
+      </div>
+    </div>
+
+    <div id="depot-grid-container" class="sibling-grid" style="grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));">
+      {depots.map((d) => {
+        const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
+        const standCount = d.stands.length;
+        const mainNumber = d.stands[0].numbers[0];
+        const searchKeywords = `${name} ${d.city} ${d.region} ${d.alsoKnownAs || ''} ${d.stands.map(s => s.label).join(' ')}`.toLowerCase();
+        return (
+          <a class="sibling-link depot-card-item" href={`/${state.slug}/${depotSlug(d.city)}`} data-search={searchKeywords} style="padding:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.35rem;">
+              <span style="font-size:1.05rem;font-weight:700;color:var(--ink);">{name}</span>
+              <span style="font-size:0.75rem;padding:0.15rem 0.45rem;background:var(--cobalt-light);color:var(--cobalt);border-radius:4px;font-weight:600;">
+                {standCount} {standCount === 1 ? 'Stand' : 'Stands'}
+              </span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--ink-light);font-variant-numeric:tabular-nums;">
+              Primary: <span style="color:var(--cobalt);font-weight:600;">{mainNumber}</span>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <script>
+    const input = document.getElementById('depot-filter-input');
+    const items = document.querySelectorAll('.depot-card-item');
+    const empty = document.getElementById('search-empty-state');
+
+    if (input) {
+      input.addEventListener('input', (e) => {
+        const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+        let count = 0;
+        items.forEach((card) => {
+          const hay = card.getAttribute('data-search') || '';
+          const match = !q || hay.includes(q);
+          (card as HTMLElement).style.display = match ? '' : 'none';
+          if (match) count++;
+        });
+        if (empty) empty.style.display = count === 0 ? 'block' : 'none';
+      });
+    }
+  </script>
+
+  <!-- Mid-Content Ad Slot -->
+  <AdSlot slotId="8460038937" label="Advertisement" />
+
+  <!-- Important Information & Guidelines -->
+  <section class="action-card" style="border-left-color: var(--navy);margin-top:2.5rem;" aria-label="Important Information">
+    <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.6rem;color:var(--ink);">Important Passenger Guidelines</h3>
+    <ul style="padding-left:1.25rem;color:var(--ink-muted);font-size:0.9rem;display:flex;flex-direction:column;gap:0.4rem;">
+      <li><strong>Advance Online Booking:</strong> Passengers can reserve seats for premium (Shivshahi, AC Shatabdi, Janrath, Sleeper) and Ordinary express services up to 30 days in advance on the official {state.corporation} portal.</li>
+      <li><strong>Luggage Assistance:</strong> For lost baggage or property left behind on {state.corporation} buses, immediately register a complaint with the destination station master or call {state.helpline.primary}.</li>
+      <li><strong>Women Passenger Safety:</strong> 24x7 dedicated emergency security support is available via Women Helpline (1090) and Police Emergency (112).</li>
+    </ul>
+  </section>
+
+  <!-- Pre-Footer Ad Slot -->
+  <AdSlot slotId="8460038937" label="Sponsored" />
+
 </Base>

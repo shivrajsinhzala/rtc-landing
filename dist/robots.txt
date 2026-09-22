@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://rtc.shivrajsinh.in/sitemap-index.xml

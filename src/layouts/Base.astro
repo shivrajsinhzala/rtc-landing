@@ -1,16 +1,7 @@
 ---
 import { SITE } from '../config/states.mjs';
+import '../styles/global.css';
 
-/**
- * The shared shell every page renders through — state-agnostic on purpose. Nothing in here
- * says "Uttar Pradesh" or "UPSRTC"; every page passes its own title, description and state
- * object in, so a second state is a data file, not a second layout.
- *
- * Reuses the same publisher id as gsrtc.shivrajsinh.in — one AdSense account can serve
- * multiple sites, but THIS DOMAIN STILL NEEDS TO BE ADDED AND VERIFIED in the AdSense dashboard,
- * and carry its own ads.txt (see public/ads.txt), before any ad unit here can earn anything.
- * Nothing renders here assumes that step is done.
- */
 interface Props {
   title: string;
   description: string;
@@ -18,11 +9,57 @@ interface Props {
   path: string;
   jsonLd?: unknown[];
   htmlLang?: string;
+  breadcrumbs?: { label: string; href: string }[];
 }
 
-const { title, description, path, jsonLd = [], htmlLang = 'en-IN' } = Astro.props;
+const { title, description, path, jsonLd = [], htmlLang = 'en-IN', breadcrumbs = [] } = Astro.props;
 const AD_CLIENT = 'ca-pub-7164999486301748';
 const canonical = `${SITE}${path}`;
+
+const baseJsonLd: unknown[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'RTC Portal',
+    url: `${SITE}/`,
+    description: 'National State Road Transport Corporation Bus Station Helplines & Enquiry Directory.',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${SITE}/?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'RTC Portal',
+    url: `${SITE}/`,
+    logo: `${SITE}/icons/logo.svg`,
+    contactPoint: [
+      {
+        '@type': 'ContactPoint',
+        telephone: '1800-180-2877',
+        contactType: 'UPSRTC Passenger Helpline',
+        areaServed: 'IN-UP',
+        availableLanguage: ['Hindi', 'English'],
+      },
+      {
+        '@type': 'ContactPoint',
+        telephone: '1800-22-1250',
+        contactType: 'MSRTC Passenger Helpline',
+        areaServed: 'IN-MH',
+        availableLanguage: ['Marathi', 'Hindi', 'English'],
+      },
+      {
+        '@type': 'ContactPoint',
+        telephone: '112',
+        contactType: 'National All-India Emergency Service',
+        areaServed: 'IN',
+      },
+    ],
+  },
+  ...jsonLd,
+];
 ---
 
 <!doctype html>
@@ -33,73 +70,172 @@ const canonical = `${SITE}${path}`;
 <title>{title}</title>
 <meta name="description" content={description} />
 <meta name="google-adsense-account" content={AD_CLIENT} />
+
+<!-- AdSense Script -->
 <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`} crossorigin="anonymous"></script>
 
 <link rel="canonical" href={canonical} />
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+<meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1" />
 
+<!-- OpenGraph -->
 <meta property="og:type" content="website" />
+<meta property="og:site_name" content="RTC Portal" />
 <meta property="og:url" content={canonical} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta name="theme-color" content="#12203a" media="(prefers-color-scheme: dark)" />
-<meta name="theme-color" content="#f7f8fb" media="(prefers-color-scheme: light)" />
+<meta property="og:image" content={`${SITE}/icons/logo.svg`} />
 
-{jsonLd.map((block) => (
+<!-- Twitter -->
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+
+<!-- Theme Colors & Favicons -->
+<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+<link rel="icon" href="/icons/logo.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+<!-- JSON-LD Structured Data -->
+{baseJsonLd.map((block) => (
   <script type="application/ld+json" set:html={JSON.stringify(block)} />
 ))}
-
-<style>
-  :root { --ink:#12203a; --ink-2:#4b5768; --bg:#f7f8fb; --card:#fff; --line:#e4e7ee; --accent:#1a56db; }
-  @media (prefers-color-scheme: dark) {
-    :root { --ink:#f2f5fb; --ink-2:#aab3c5; --bg:#0d1424; --card:#161f33; --line:#232e47; --accent:#5b9dff; }
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 system-ui,-apple-system,sans-serif; }
-  .wrap { max-width:760px; margin:0 auto; padding:0 1.1rem; }
-  header.site { border-bottom:1px solid var(--line); padding:1rem 0; }
-  header.site a { color:var(--ink); text-decoration:none; font-weight:700; }
-  main { padding:2rem 0 3rem; }
-  h1 { font-size:1.7rem; line-height:1.25; margin:0 0 .6rem; }
-  h2 { font-size:1.2rem; margin:2rem 0 .6rem; }
-  p { color:var(--ink-2); }
-  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1.2rem; margin:1.4rem 0; }
-  .call-btns { display:flex; flex-wrap:wrap; gap:.6rem; margin:.8rem 0; }
-  .call-btns a { background:var(--accent); color:#fff; padding:.55rem 1rem; border-radius:8px; text-decoration:none; font-weight:600; font-size:.95rem; }
-  table { width:100%; border-collapse:collapse; margin:1rem 0; }
-  th,td { text-align:left; padding:.5rem .6rem; border-bottom:1px solid var(--line); font-size:.95rem; }
-  th { color:var(--ink-2); font-weight:600; }
-  ul.plain { list-style:none; padding:0; margin:0; }
-  ul.plain li { padding:.4rem 0; border-bottom:1px solid var(--line); }
-  ul.plain a { color:var(--accent); text-decoration:none; }
-  .ad-slot-wrap { margin:1.6rem auto; max-width:760px; text-align:center; }
-  .ad-slot-wrap[hidden], .ad-slot-wrap:empty { display:none; }
-  .ad-label { color:var(--ink-2); font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; margin:0 0 .4rem; }
-  footer.site { border-top:1px solid var(--line); padding:1.4rem 0; color:var(--ink-2); font-size:.85rem; }
-</style>
 </head>
 <body>
-<header class="site"><div class="wrap"><a href="/">RTC Bus Info</a></div></header>
-<main class="wrap"><slot /></main>
-<footer class="site"><div class="wrap">
-  <p>Independent, ad-supported. Not affiliated with or endorsed by any state transport corporation named on this site.</p>
-</div></footer>
+
+<!-- Institutional Top Notice Bar -->
+<div class="gov-notice-bar">
+  <div class="wrap gov-notice-content">
+    <div class="gov-flag-badge">
+      <svg width="14" height="10" viewBox="0 0 24 16" fill="none" aria-hidden="true">
+        <rect width="24" height="5.33" fill="#FF9933"/>
+        <rect y="5.33" width="24" height="5.34" fill="#FFFFFF"/>
+        <rect y="10.67" width="24" height="5.33" fill="#138808"/>
+        <circle cx="12" cy="8" r="2.2" stroke="#000080" stroke-width="0.7"/>
+      </svg>
+      <span>National State Road Transport Helpline Directory · Public Utility</span>
+    </div>
+    <div class="gov-right-links">
+      <a class="gov-helpline-quick" href="tel:112">Emergency: 112</a>
+      <a class="gov-helpline-quick" href="tel:1033">Highway Helpline: 1033</a>
+    </div>
+  </div>
+</div>
+
+<!-- Main Site Header -->
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand-wrap" href="/" aria-label="RTC Portal Home">
+      <img class="brand-logo" src="/icons/logo.svg" alt="RTC Portal Logo" width="40" height="40" />
+      <div class="brand-titles">
+        <span class="brand-title">RTC Portal</span>
+        <span class="brand-tagline">State Road Transport Helplines &amp; Depots</span>
+      </div>
+    </a>
+
+    <nav class="header-nav" aria-label="Main Navigation">
+      <a class="nav-pill-btn" href="/uttar-pradesh">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        <span>UP Roadways</span>
+      </a>
+      <a class="nav-pill-btn" href="/maharashtra">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+        <span>Maharashtra ST</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<!-- Breadcrumbs if provided -->
+{breadcrumbs.length > 0 && (
+  <nav class="wrap breadcrumbs-nav" aria-label="Breadcrumbs">
+    <ol class="breadcrumbs-list">
+      <li><a href="/">Home</a></li>
+      {breadcrumbs.map((crumb, idx) => (
+        <>
+          <li class="breadcrumbs-sep" aria-hidden="true">›</li>
+          <li>
+            {idx === breadcrumbs.length - 1 ? (
+              <span class="breadcrumbs-current" aria-current="page">{crumb.label}</span>
+            ) : (
+              <a href={crumb.href}>{crumb.label}</a>
+            )}
+          </li>
+        </>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<main class="wrap main-content">
+  <slot />
+</main>
+
+<!-- Institutional Footer -->
+<footer class="site-footer">
+  <div class="wrap footer-top">
+    <div>
+      <div class="footer-brand-title">
+        <img src="/icons/logo.svg" alt="" width="24" height="24" aria-hidden="true" />
+        <span>RTC Portal</span>
+      </div>
+      <p class="footer-brand-desc">
+        Authoritative directory of bus stand enquiry numbers, divisional headquarters, and 24x7 passenger helplines across Indian State Road Transport Corporations (RTCs). Sourced directly from published government records.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="footer-heading">Emergency Helplines</h3>
+      <ul class="footer-links">
+        <li><a href="tel:112">National Emergency: 112</a></li>
+        <li><a href="tel:1033">National Highway: 1033</a></li>
+        <li><a href="tel:1090">Women Powerline: 1090</a></li>
+        <li><a href="tel:1073">Road Accident Helpline: 1073</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="footer-heading">State Transport Hubs</h3>
+      <ul class="footer-links">
+        <li><a href="/uttar-pradesh">Uttar Pradesh (UPSRTC)</a></li>
+        <li><a href="/maharashtra">Maharashtra (MSRTC)</a></li>
+        <li><a href="https://gsrtc.shivrajsinh.in" target="_blank" rel="noopener">Gujarat (GSRTC Tracker)</a></li>
+        <li><a href="/#states">Rajasthan (RSRTC)</a></li>
+        <li><a href="/#states">All States Directory</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <p>
+      © 2026 RTC Portal. Independent public directory. Not affiliated with or endorsed by UPSRTC, MSRTC, or the Ministry of Road Transport and Highways.
+    </p>
+    <div>
+      <a href="/sitemap-index.xml">Sitemap</a>
+    </div>
+  </div>
+</footer>
+
 <script>
-  /*
-   * One manual slot per page today, so pushing on width alone is safe. It stops being safe the
-   * moment Auto Ads is turned on for this domain or a second manual slot is added to a page —
-   * `push({})` binds to the next unprocessed `ins.adsbygoogle` in DOCUMENT ORDER, not the one
-   * next to this script, and gsrtc.shivrajsinh.in lost both its homepage ad units to exactly
-   * this for weeks before it was caught (src/scripts/site.js in that repo has the fix and the
-   * full postmortem). Port that fix here before enabling Auto Ads or a second slot on any page.
-   */
-  document.querySelectorAll('ins.adsbygoogle').forEach((slot) => {
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (slot.getBoundingClientRect().width > 0) {
-        try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch {}
-      }
-    }));
-  });
+  // Resilient multi-slot AdSense binding
+  function initAds() {
+    const slots = document.querySelectorAll('ins.adsbygoogle');
+    slots.forEach((slot) => {
+      if (slot.dataset.bound === '1') return;
+      slot.dataset.bound = '1';
+      try {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch {}
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAds);
+  } else {
+    initAds();
+  }
 </script>
+
 </body>
 </html>

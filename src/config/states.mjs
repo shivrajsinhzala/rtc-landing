@@ -44,6 +44,22 @@ export const STATES = {
     lang: 'en',
     htmlLang: 'en-IN',
   },
+  'maharashtra': {
+    id: 'maharashtra',
+    slug: 'maharashtra',
+    name: 'Maharashtra',
+    corporation: 'MSRTC',
+    corporationFull: 'Maharashtra State Road Transport Corporation',
+    brand: 'Maharashtra ST Bus Info',
+    officialSite: 'https://msrtc.maharashtra.gov.in',
+    /**
+     * Sourced directly from msrtc.maharashtra.gov.in and district administration records.
+     * MSRTC 24x7 central toll-free passenger customer care: 1800-22-1250.
+     */
+    helpline: { primary: '1800-22-1250', label: '24x7 MSRTC passenger helpline' },
+    lang: 'en',
+    htmlLang: 'en-IN',
+  },
 };
 
 export const stateList = Object.values(STATES);

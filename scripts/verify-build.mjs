@@ -10,8 +10,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { STATES } from '../src/config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../src/data/uttar-pradesh/depots.data.mjs';
+import { DEPOTS as MH_DEPOTS } from '../src/data/maharashtra/depots.data.mjs';
 
-const DEPOT_SOURCES = { 'uttar-pradesh': UP_DEPOTS };
+const DEPOT_SOURCES = {
+  'uttar-pradesh': UP_DEPOTS,
+  'maharashtra': MH_DEPOTS,
+};
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
 

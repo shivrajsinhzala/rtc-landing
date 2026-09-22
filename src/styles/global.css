@@ -1,0 +1,871 @@
+/* ------------------------------------------------------------------
+   RTC Portal Design System & Institutional Styles
+   Authoritative National State Road Transport Directory
+------------------------------------------------------------------- */
+
+:root {
+  /* Institutional Palette */
+  --navy-dark: #090d16;
+  --navy: #0f172a;
+  --navy-sub: #1e293b;
+  --bg: #f8fafc;
+  --bg-sub: #f1f5f9;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --line: #e2e8f0;
+  --line-sub: #cbd5e1;
+
+  /* Accents */
+  --cobalt: #1d4ed8;
+  --cobalt-hover: #1e40af;
+  --cobalt-light: #eff6ff;
+  --emerald: #059669;
+  --emerald-bg: #ecfdf5;
+  --emerald-border: #a7f3d0;
+  --amber: #b45309;
+  --amber-bg: #fffbeb;
+
+  /* Typography */
+  --ink: #0f172a;
+  --ink-muted: #334155;
+  --ink-light: #64748b;
+  --ink-white: #ffffff;
+
+  /* Layout */
+  --wrap: 920px;
+  --wrap-wide: 1140px;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b111e;
+    --bg-sub: #111a2e;
+    --surface: #152238;
+    --surface-raised: #1c2c48;
+    --line: #223452;
+    --line-sub: #2e4469;
+    --ink: #f1f5f9;
+    --ink-muted: #94a3b8;
+    --ink-light: #64748b;
+    --cobalt: #3b82f6;
+    --cobalt-hover: #60a5fa;
+    --cobalt-light: rgba(59, 130, 246, 0.12);
+    --emerald-bg: rgba(16, 185, 129, 0.12);
+    --emerald-border: #065f46;
+    --amber-bg: rgba(245, 158, 11, 0.12);
+  }
+}
+
+/* ------------------------------------------------------------------ Reset & Base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background-color: var(--bg);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrap {
+  width: 100%;
+  max-width: var(--wrap);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.wrap-wide {
+  width: 100%;
+  max-width: var(--wrap-wide);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+/* ------------------------------------------------------------------ Institutional Top Bar */
+.gov-notice-bar {
+  background: var(--navy-dark);
+  color: #94a3b8;
+  font-size: 0.75rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.gov-notice-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.gov-flag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.gov-flag-badge svg {
+  flex-shrink: 0;
+}
+
+.gov-right-links {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.gov-helpline-quick {
+  color: #e2e8f0;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.gov-helpline-quick:hover {
+  color: #60a5fa;
+}
+
+/* ------------------------------------------------------------------ Header */
+header.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4.25rem;
+}
+
+.brand-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand-logo {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+}
+
+.brand-titles {
+  display: flex;
+  flex-direction: column;
+}
+
+.brand-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.brand-tagline {
+  font-size: 0.75rem;
+  color: var(--ink-light);
+  font-weight: 500;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--cobalt);
+  background: var(--cobalt-light);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.nav-pill-btn:hover {
+  background: var(--cobalt);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------ Breadcrumbs */
+.breadcrumbs-nav {
+  padding: 0.85rem 0;
+  font-size: 0.82rem;
+  color: var(--ink-light);
+}
+
+.breadcrumbs-list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  list-style: none;
+}
+
+.breadcrumbs-list li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.breadcrumbs-list a {
+  color: var(--ink-light);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.breadcrumbs-list a:hover {
+  color: var(--cobalt);
+  text-decoration: underline;
+}
+
+.breadcrumbs-sep {
+  color: var(--line-sub);
+}
+
+.breadcrumbs-current {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ Main Container */
+main.main-content {
+  flex: 1;
+  padding-bottom: 3.5rem;
+}
+
+/* ------------------------------------------------------------------ Hero Cards & Headings */
+.page-hero {
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.badge-official {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--emerald);
+  background: var(--emerald-bg);
+  border: 1px solid var(--emerald-border);
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.badge-official::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+}
+
+h1.page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1.2;
+  margin-bottom: 0.65rem;
+}
+
+p.page-lede {
+  font-size: 1.05rem;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  max-width: 720px;
+}
+
+/* ------------------------------------------------------------------ 1-Tap Quick Action Box */
+.action-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--cobalt);
+  border-radius: var(--radius);
+  padding: 1.35rem;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.action-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.action-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.action-card-subtitle {
+  font-size: 0.8rem;
+  color: var(--ink-light);
+}
+
+.call-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btn-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--cobalt);
+  color: #ffffff;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(29, 78, 216, 0.25);
+  transition: background 0.15s ease, transform 0.05s ease;
+  font-variant-numeric: tabular-nums;
+  min-height: 46px;
+}
+
+.btn-call:hover {
+  background: var(--cobalt-hover);
+  transform: translateY(-1px);
+}
+
+.btn-call:active {
+  transform: translateY(0);
+}
+
+.btn-call svg {
+  flex-shrink: 0;
+}
+
+.btn-call.secondary {
+  background: var(--bg-sub);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.btn-call.secondary:hover {
+  background: var(--line);
+}
+
+/* ------------------------------------------------------------------ Tables */
+.table-container {
+  margin: 1.75rem 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+table.depot-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.92rem;
+}
+
+table.depot-table th {
+  background: var(--bg-sub);
+  color: var(--ink);
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid var(--line);
+  white-space: nowrap;
+}
+
+table.depot-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-muted);
+}
+
+table.depot-table tr:last-child td {
+  border-bottom: none;
+}
+
+table.depot-table tr:hover td {
+  background: rgba(29, 78, 216, 0.02);
+}
+
+.depot-name-cell {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.depot-number-cell {
+  font-variant-numeric: tabular-nums;
+}
+
+.depot-phone-link {
+  color: var(--cobalt);
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.depot-phone-link:hover {
+  background: var(--cobalt-light);
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ FAQ Accordions */
+.faq-section {
+  margin: 2.5rem 0 1.5rem;
+}
+
+.section-h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+
+.faq-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+details.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.15s;
+}
+
+details.faq-item[open] {
+  border-color: var(--cobalt);
+}
+
+details.faq-item summary {
+  padding: 0.95rem 1.15rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+details.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item summary::after {
+  content: "+";
+  font-size: 1.2rem;
+  color: var(--cobalt);
+  font-weight: 400;
+  transition: transform 0.2s;
+}
+
+details.faq-item[open] summary::after {
+  content: "−";
+  transform: rotate(180deg);
+}
+
+.faq-answer {
+  padding: 0 1.15rem 1rem;
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* ------------------------------------------------------------------ Sibling Depot Links Grid */
+.sibling-mesh {
+  margin: 2.5rem 0 1rem;
+  background: var(--bg-sub);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.sibling-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.75rem;
+  list-style: none;
+}
+
+.sibling-link {
+  display: block;
+  padding: 0.6rem 0.85rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.sibling-link:hover {
+  border-color: var(--cobalt);
+  color: var(--cobalt);
+  transform: translateY(-1px);
+}
+
+/* ------------------------------------------------------------------ Ad Slots */
+.ad-slot-wrap {
+  margin: 1.75rem auto;
+  max-width: var(--wrap);
+  text-align: center;
+  overflow: hidden;
+}
+
+.ad-label {
+  color: var(--ink-light);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+ins.adsbygoogle {
+  display: block !important;
+  margin: 0 auto;
+  min-height: 90px;
+  background: rgba(15, 23, 42, 0.02);
+  border-radius: var(--radius-sm);
+}
+
+/* ------------------------------------------------------------------ National State Cards (Homepage) */
+.state-hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.15rem;
+  margin: 1.5rem 0 2.5rem;
+}
+
+.state-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.35rem;
+  text-decoration: none;
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.state-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--cobalt);
+  box-shadow: var(--shadow);
+}
+
+.state-card-corp {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--cobalt);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3rem;
+}
+
+.state-card-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 0.4rem;
+}
+
+.state-card-desc {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.state-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  padding-top: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  font-weight: 500;
+}
+
+.state-badge-active {
+  color: var(--emerald);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.state-badge-active::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--emerald);
+}
+
+/* ------------------------------------------------------------------ Footer */
+footer.site-footer {
+  background: var(--navy-dark);
+  color: #94a3b8;
+  padding: 3rem 0 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.85rem;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.footer-brand-title {
+  color: #f1f5f9;
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-brand-desc {
+  color: #94a3b8;
+  line-height: 1.6;
+  max-width: 380px;
+}
+
+.footer-heading {
+  color: #f1f5f9;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.footer-links a {
+  color: #94a3b8;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footer-links a:hover {
+  color: #60a5fa;
+}
+
+.footer-bottom {
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.footer-bottom a {
+  color: #94a3b8;
+  text-decoration: none;
+}
+
+.footer-bottom a:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------ Search & Filters */
+.search-box-wrap {
+  position: relative;
+  margin: 1.5rem 0 2rem;
+  width: 100%;
+}
+
+.search-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1.15rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--ink-light);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.95rem 1.15rem 0.95rem 3rem;
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.search-input:focus {
+  border-color: var(--cobalt);
+  box-shadow: 0 0 0 3px var(--cobalt-light);
+}
+
+.search-input::placeholder {
+  color: var(--ink-light);
+  font-size: 0.95rem;
+}
+
+.search-empty {
+  display: none;
+  text-align: center;
+  padding: 2.5rem 1.5rem;
+  color: var(--ink-light);
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  margin-top: 1rem;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  margin-top: 0.4rem;
+  max-height: 360px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.search-result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1.15rem;
+  text-decoration: none;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.12s ease;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover,
+.search-result-item:focus {
+  background: var(--cobalt-light);
+}
+
+.search-item-title {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.search-item-sub {
+  color: var(--ink-light);
+  font-size: 0.78rem;
+  margin-top: 0.15rem;
+}
+
+.search-item-action {
+  color: var(--cobalt);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-left: 0.75rem;
+}
+
+

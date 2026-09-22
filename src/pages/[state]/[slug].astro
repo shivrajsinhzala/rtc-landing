@@ -2,6 +2,7 @@
 import DepotPage from '../../layouts/DepotPage.astro';
 import { STATES } from '../../config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
+import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
 
 /**
  * One dynamic route for every state's depot pages. Adding a second state means adding its
@@ -15,7 +16,10 @@ import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.
  * for that extraction step to fail to capture.
  */
 export function getStaticPaths() {
-  const sources = { 'uttar-pradesh': UP_DEPOTS };
+  const sources = {
+    'uttar-pradesh': UP_DEPOTS,
+    'maharashtra': MH_DEPOTS,
+  };
   const paths = [];
   for (const [stateId, depots] of Object.entries(sources)) {
     depots.forEach((depot, i) => {
