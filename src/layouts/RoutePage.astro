@@ -89,16 +89,24 @@ const faqs = [
   },
 ];
 
+const regionalTerms = state.corporation === 'MSRTC'
+  ? `${originCity} ते ${destinationCity} एसटी बस वेळापत्रक, तिकीट दर, पहिली बस, अंतिम बस`
+  : `${originCity} से ${destinationCity} रोडवेज बस टाइम टेबल, समय सारणी, किराया, पहली बस, आखिरी बस`;
+
+const keywords = `${originCity} to ${destinationCity} bus time table, ${originCity} to ${destinationCity} bus ticket price, ${originCity} to ${destinationCity} roadways bus, ${route.corporation} ${originCity} ${destinationCity} schedule, ${originCity} to ${destinationCity} bus fare, ${regionalTerms}`;
+
 const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: title,
     description: metaDesc,
+    keywords,
     url: `https://rtc.shivrajsinh.in${path}`,
     about: {
       '@type': 'TouristTrip',
       name: `${originCity} to ${destinationCity} Bus Route`,
+      alternateName: state.corporation === 'MSRTC' ? `${originCity} ते ${destinationCity} एसटी बस` : `${originCity} से ${destinationCity} रोडवेज बस`,
       description: `${route.corporation} intercity bus service connecting ${originCity} and ${destinationCity}`,
       touristType: 'Public Transit Passenger',
     },
@@ -128,12 +136,15 @@ const jsonLd = [
 ];
 ---
 
-<Base title={title} description={metaDesc} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
+<Base title={title} description={metaDesc} keywords={keywords} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
 
   <!-- Route Hero Header -->
   <section class="page-hero">
     <div class="badge-official">{route.corporation} Intercity Schedule · {state.name}</div>
     <h1 class="page-title">{originCity} to {destinationCity} Bus Timetable &amp; Fares</h1>
+    <p class="bilingual-badge" style="color: var(--color-primary); font-size: 0.95rem; font-weight: 600; margin: -0.25rem 0 0.5rem;">
+      {state.corporation === 'MSRTC' ? `${originCity} ते ${destinationCity} एसटी बस वेळापत्रक व तिकीट दर` : `${originCity} से ${destinationCity} रोडवेज बस टाइम टेबल, समय सारणी व किराया`}
+    </p>
     <p class="page-lede">
       Official schedule, ticket prices, departure frequency, and station counter enquiry phone numbers for <strong>{route.corporation}</strong> buses between <strong>{originCity}</strong> and <strong>{destinationCity}</strong>.
     </p>

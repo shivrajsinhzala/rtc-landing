@@ -5,6 +5,7 @@ import '../styles/global.css';
 interface Props {
   title: string;
   description: string;
+  keywords?: string;
   /** Path with leading slash, e.g. '/uttar-pradesh/agra-bus-station-contact-number'. */
   path: string;
   jsonLd?: unknown[];
@@ -12,7 +13,15 @@ interface Props {
   breadcrumbs?: { label: string; href: string }[];
 }
 
-const { title, description, path, jsonLd = [], htmlLang = 'en-IN', breadcrumbs = [] } = Astro.props;
+const {
+  title,
+  description,
+  keywords = 'roadways bus enquiry number, bus stand contact number, roadways bus time table, bus ticket price, यूपी रोडवेज बस टाइम टेबल, रोडवेज बस समय सारणी, बस स्टैंड पूछताछ नंबर, एसटी बस चौकशी क्रमांक, rtc enquiry number',
+  path,
+  jsonLd = [],
+  htmlLang = 'en-IN',
+  breadcrumbs = []
+} = Astro.props;
 const AD_CLIENT = 'ca-pub-7164999486301748';
 const canonical = `${SITE}${path}`;
 
@@ -83,6 +92,7 @@ const baseJsonLd: unknown[] = [
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>{title}</title>
 <meta name="description" content={description} />
+<meta name="keywords" content={keywords} />
 <meta name="google-adsense-account" content={AD_CLIENT} />
 
 <!-- AdSense Script -->

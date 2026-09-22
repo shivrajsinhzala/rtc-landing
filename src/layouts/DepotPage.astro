@@ -59,16 +59,24 @@ const faqs = [
   }
 ];
 
+const regionalTerms = state.corporation === 'MSRTC'
+  ? `${cityName} एसटी बस चौकशी क्रमांक, ${cityName} बस स्थानक संपर्क, एसटी वेळापत्रक`
+  : `${cityName} बस स्टैंड इंक्वायरी नंबर, ${cityName} रोडवेज फोन नंबर, ${cityName} रोडवेज बस टाइम टेबल, समय सारणी`;
+
+const keywords = `${cityName} bus stand contact number, ${cityName} bus stand enquiry number, ${cityName} roadways phone number, ${state.corporation} ${cityName} enquiry, ${cityName} bus time table, ${cityName} bus stand ticket counter, ${regionalTerms}`;
+
 const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: title,
     description,
+    keywords,
     url: `https://rtc.shivrajsinh.in${path}`,
     about: {
       '@type': 'BusStation',
       name: `${cityName} ${state.corporation} Bus Station`,
+      alternateName: state.corporation === 'MSRTC' ? `${cityName} एसटी बस स्थानक` : `${cityName} रोडवेज बस स्टैंड`,
       telephone: primaryNumber,
       address: {
         '@type': 'PostalAddress',
@@ -102,11 +110,14 @@ const jsonLd = [
 ];
 ---
 
-<Base title={title} description={description} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
+<Base title={title} description={description} keywords={keywords} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
   
   <section class="page-hero">
     <div class="badge-official">Official Government Sourced · Verified 2026</div>
     <h1 class="page-title">{cityName} Bus Station Contact Number &amp; Enquiry</h1>
+    <p class="bilingual-badge" style="color: var(--color-primary); font-size: 0.95rem; font-weight: 600; margin: -0.25rem 0 0.5rem;">
+      {state.corporation === 'MSRTC' ? `${cityName} एसटी बस स्थानक संपर्क क्रमांक व चौकशी कक्ष` : `${cityName} रोडवेज बस स्टैंड पूछताछ नंबर एवं समय सारणी`}
+    </p>
     <p class="page-lede">
       Official {state.corporation} ({state.corporation}) Roadways enquiry phone numbers for <strong>{cityName}</strong>{alias}. Direct telephone access to station master counters, platform inquiry desks, and the 24x7 statewide passenger helpline.
     </p>
