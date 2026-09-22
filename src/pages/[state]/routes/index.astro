@@ -5,7 +5,7 @@ import { STATES } from '../../../config/states.mjs';
 import { ROUTES } from '../../../data/routes.data.mjs';
 
 export function getStaticPaths() {
-  const stateIds = ['uttar-pradesh', 'maharashtra', 'rajasthan', 'haryana'];
+  const stateIds = ['uttar-pradesh', 'maharashtra', 'rajasthan', 'haryana', 'himachal-pradesh', 'uttarakhand', 'punjab', 'gujarat'];
   return stateIds.map((stateId) => ({
     params: { state: stateId },
     props: {
@@ -48,7 +48,7 @@ const jsonLd = [
 <Base title={title} description={description} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
 
   <section class="page-hero">
-    <div class="badge-official">{state.corporation} Intercity Network · {state.name}</div>
+    <div style="font-size:0.8rem;font-weight:700;color:var(--transit-amber);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.35rem;">{state.corporation} Intercity Network · {state.name}</div>
     <h1 class="page-title">{state.corporation} Bus Timetables &amp; Route Fares</h1>
     <p class="page-lede">
       Verified departure schedules, distance, travel duration, and ticket fares for major <strong>{state.corporation}</strong> intercity and interstate highway routes connecting <strong>{state.name}</strong>.
@@ -63,20 +63,20 @@ const jsonLd = [
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
       <div>
         <h2 class="section-h2" id="routes-heading" style="margin-bottom:0.25rem;">Major Express Bus Corridors</h2>
-        <p style="color:var(--ink-light);font-size:0.9rem;">Select any route to check point-to-point departure times, ticket prices, and bus stand counters:</p>
+        <p style="color:var(--ink-muted);font-size:0.9rem;">Select any route to check point-to-point departure times, ticket prices, and bus stand counters:</p>
       </div>
-      <a class="nav-pill-btn" href={`/${state.slug}`} style="font-size:0.8rem;">
-        <span>View {state.name} Depot Contacts →</span>
+      <a class="btn-dial secondary" href={`/${state.slug}`} style="font-size:0.8rem;padding:0.4rem 0.8rem;">
+        <span>{state.name} Depot Contacts</span>
       </a>
     </div>
 
     <div class="state-hub-grid" style="grid-template-columns:repeat(auto-fill, minmax(320px, 1fr));">
       {routes.map((r) => (
-        <a class="state-card" href={`/${state.slug}/routes/${r.slug}`} style="border-left: 4px solid var(--cobalt);">
+        <a class="state-card" href={`/${state.slug}/routes/${r.slug}`} style="border-left: 3px solid var(--transit-blue);">
           <div>
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
               <span class="state-card-corp">{r.corporation} Express</span>
-              <span style="font-size:0.75rem;padding:0.15rem 0.45rem;background:var(--emerald-light);color:var(--emerald);border-radius:4px;font-weight:700;">
+              <span style="font-size:0.75rem;padding:0.15rem 0.45rem;background:var(--transit-green-bg);color:var(--transit-green);border:1px solid var(--transit-green);border-radius:2px;font-weight:700;">
                 {r.durationHours}
               </span>
             </div>
@@ -88,10 +88,10 @@ const jsonLd = [
             </p>
           </div>
           <div class="state-card-meta">
-            <span style="font-size:0.82rem;font-weight:700;color:var(--emerald);">
+            <span style="font-size:0.82rem;font-weight:700;color:var(--transit-green);font-variant-numeric:tabular-nums;">
               From {r.fares[0].price}
             </span>
-            <span style="color:var(--cobalt);font-weight:700;">Full Timetable →</span>
+            <span style="color:var(--transit-blue);font-weight:700;">Full Timetable</span>
           </div>
         </a>
       ))}
@@ -102,19 +102,22 @@ const jsonLd = [
   <AdSlot slotId="8460038937" label="Advertisement" />
 
   <!-- Statewide Travel & Booking Information -->
-  <section class="action-card" style="border-left-color: var(--navy);margin-top:2rem;" aria-label="Official Booking & Helpline">
-    <h3 style="font-size:1.1rem;font-weight:700;margin-bottom:0.5rem;color:var(--ink);">{state.corporation} Passenger Booking Support</h3>
+  <section class="dial-action-strip" style="margin-top:2rem;" aria-label="Official Booking & Helpline">
+    <div class="dial-strip-header">
+      <div class="dial-strip-title">{state.corporation} Passenger Booking Support</div>
+      <div class="dial-strip-sub">24x7 passenger helpline and official booking portal</div>
+    </div>
     <p style="font-size:0.9rem;color:var(--ink-muted);line-height:1.6;margin-bottom:1rem;">
-      Tickets for AC Janrath, Shivshahi, Shivneri, Ordinary Express, and Sleeper coaches can be reserved up to 30 days in advance on the official {state.corporation} portal. For phone inquiries, duty controller confirmation, or seat availability, dial the 24x7 toll-free helpline at:
+      Tickets for express, sleeper, and luxury coaches can be reserved up to 30 days in advance on the official {state.corporation} portal. For phone inquiries, duty controller confirmation, or seat availability, dial the 24x7 toll-free helpline:
     </p>
     <div class="call-button-group">
-      <a class="btn-call" href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <a class="btn-dial" href={`tel:${state.helpline.primary.replace(/[^0-9]/g, '')}`}>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         <span>Call Helpline: {state.helpline.primary}</span>
       </a>
       {state.officialSite && (
-        <a class="btn-call secondary" href={state.officialSite} target="_blank" rel="noopener noreferrer">
-          <span>Official Portal ({state.officialSite.replace('https://', '')}) ↗</span>
+        <a class="btn-dial secondary" href={state.officialSite} target="_blank" rel="noopener noreferrer">
+          <span>Official Portal ({state.officialSite.replace('https://', '')})</span>
         </a>
       )}
     </div>

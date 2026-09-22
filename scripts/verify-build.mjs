@@ -13,6 +13,10 @@ import { DEPOTS as UP_DEPOTS, depotSlug } from '../src/data/uttar-pradesh/depots
 import { DEPOTS as MH_DEPOTS } from '../src/data/maharashtra/depots.data.mjs';
 import { DEPOTS as RJ_DEPOTS } from '../src/data/rajasthan/depots.data.mjs';
 import { DEPOTS as HR_DEPOTS } from '../src/data/haryana/depots.data.mjs';
+import { DEPOTS as HP_DEPOTS } from '../src/data/himachal-pradesh/depots.data.mjs';
+import { DEPOTS as UK_DEPOTS } from '../src/data/uttarakhand/depots.data.mjs';
+import { DEPOTS as PB_DEPOTS } from '../src/data/punjab/depots.data.mjs';
+import { DEPOTS as GJ_DEPOTS } from '../src/data/gujarat/depots.data.mjs';
 import { ROUTES } from '../src/data/routes.data.mjs';
 
 const DEPOT_SOURCES = {
@@ -20,6 +24,10 @@ const DEPOT_SOURCES = {
   'maharashtra': MH_DEPOTS,
   'rajasthan': RJ_DEPOTS,
   'haryana': HR_DEPOTS,
+  'himachal-pradesh': HP_DEPOTS,
+  'uttarakhand': UK_DEPOTS,
+  'punjab': PB_DEPOTS,
+  'gujarat': GJ_DEPOTS,
 };
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');

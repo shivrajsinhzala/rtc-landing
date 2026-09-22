@@ -6,217 +6,213 @@ import { DEPOTS as UP_DEPOTS, depotSlug } from '../data/uttar-pradesh/depots.dat
 import { DEPOTS as MH_DEPOTS } from '../data/maharashtra/depots.data.mjs';
 import { DEPOTS as RJ_DEPOTS } from '../data/rajasthan/depots.data.mjs';
 import { DEPOTS as HR_DEPOTS } from '../data/haryana/depots.data.mjs';
+import { DEPOTS as HP_DEPOTS } from '../data/himachal-pradesh/depots.data.mjs';
+import { DEPOTS as UK_DEPOTS } from '../data/uttarakhand/depots.data.mjs';
+import { DEPOTS as PB_DEPOTS } from '../data/punjab/depots.data.mjs';
+import { DEPOTS as GJ_DEPOTS } from '../data/gujarat/depots.data.mjs';
 import { ROUTES } from '../data/routes.data.mjs';
 
-const title = 'State Road Transport Bus Info — Official RTC Helplines, Timetables & Depots';
-const description = 'Official all-India directory of State Road Transport Corporation (RTC) bus stand enquiry numbers, intercity bus timetables, ticket fares, and 24x7 passenger helplines across Indian states.';
+const title = 'State Road Transport Helplines & Intercity Bus Timetables — All RTCs';
+const description = 'Official directory of Indian State Road Transport Corporation (RTC) bus stand enquiry numbers, station master helplines, and intercity express bus timetables across 8 states.';
 
-const upcomingStates = [
-  {
-    name: 'Gujarat',
-    corporation: 'GSRTC',
-    desc: 'Gujarat State Road Transport Corporation · Live GPS bus tracker, timetables across 19,000+ stations & 26 divisional depots.',
-    link: 'https://gsrtc.shivrajsinh.in',
-    isExternal: true,
-    status: 'Live on GSRTC Portal',
-  },
-  {
-    name: 'Karnataka',
-    corporation: 'KSRTC',
-    desc: 'Karnataka State Road Transport Corporation · Bangalore (Majestic Kempegowda), Mysore, Mangalore, Hubli and Belgaum terminals.',
-    link: '/#states',
-    isExternal: false,
-    status: 'Directory Indexing',
-  },
-  {
-    name: 'Himachal Pradesh',
-    corporation: 'HRTC',
-    desc: 'Himachal Road Transport Corporation · Shimla ISBT, Manali, Dharamshala, Kangra, Kullu and interstate Delhi ISBT services.',
-    link: '/#states',
-    isExternal: false,
-    status: 'Directory Indexing',
-  },
+const allDepotSources = [
+  { stateId: 'uttar-pradesh', corp: 'UPSRTC', depots: UP_DEPOTS },
+  { stateId: 'maharashtra', corp: 'MSRTC', depots: MH_DEPOTS },
+  { stateId: 'rajasthan', corp: 'RSRTC', depots: RJ_DEPOTS },
+  { stateId: 'haryana', corp: 'Haryana Roadways', depots: HR_DEPOTS },
+  { stateId: 'himachal-pradesh', corp: 'HRTC', depots: HP_DEPOTS },
+  { stateId: 'uttarakhand', corp: 'UTC', depots: UK_DEPOTS },
+  { stateId: 'punjab', corp: 'PUNBUS', depots: PB_DEPOTS },
+  { stateId: 'gujarat', corp: 'GSRTC', depots: GJ_DEPOTS },
 ];
 
 const allSearchEntries = [
-  ...UP_DEPOTS.map((d) => {
-    const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
-    return {
-      title: `${name} Bus Station Contact Number`,
-      sub: `UPSRTC · ${d.stands.length} stands (Primary: ${d.stands[0].numbers[0]})`,
-      url: `/uttar-pradesh/${depotSlug(d.city)}`,
-      action: 'View Numbers →',
-      keywords: `${d.city} ${d.region} ${d.alsoKnownAs || ''} uttar pradesh up roadways bus stand station enquiry phone`.toLowerCase(),
-    };
-  }),
-  ...MH_DEPOTS.map((d) => {
-    const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
-    return {
-      title: `${name} Bus Station Contact Number`,
-      sub: `MSRTC · ${d.stands.length} stands (Primary: ${d.stands[0].numbers[0]})`,
-      url: `/maharashtra/${depotSlug(d.city)}`,
-      action: 'View Numbers →',
-      keywords: `${d.city} ${d.region} ${d.alsoKnownAs || ''} maharashtra msrtc st bus stand station enquiry phone`.toLowerCase(),
-    };
-  }),
-  ...RJ_DEPOTS.map((d) => {
-    const name = d.region;
-    return {
-      title: `${name} Bus Station Contact Number`,
-      sub: `RSRTC · ${d.stands.length} stands (Primary: ${d.stands[0].numbers[0]})`,
-      url: `/rajasthan/${depotSlug(d.city)}`,
-      action: 'View Numbers →',
-      keywords: `${d.city} ${d.region} rajasthan rsrtc roadways bus stand station enquiry phone`.toLowerCase(),
-    };
-  }),
-  ...HR_DEPOTS.map((d) => {
-    const name = d.region;
-    return {
-      title: `${name} Bus Station Contact Number`,
-      sub: `Haryana Roadways · ${d.stands.length} stands (Primary: ${d.stands[0].numbers[0]})`,
-      url: `/haryana/${depotSlug(d.city)}`,
-      action: 'View Numbers →',
-      keywords: `${d.city} ${d.region} haryana roadways bus stand station enquiry phone`.toLowerCase(),
-    };
-  }),
+  ...allDepotSources.flatMap(({ stateId, corp, depots }) =>
+    depots.map((d) => {
+      const name = d.alsoKnownAs ? d.region : d.city[0].toUpperCase() + d.city.slice(1);
+      return {
+        title: `${name} Bus Station Contact Number`,
+        sub: `${corp} · ${d.stands.length} counter${d.stands.length > 1 ? 's' : ''} (Primary: ${d.stands[0].numbers[0]})`,
+        url: `/${stateId}/${depotSlug(d.city)}`,
+        action: 'View numbers',
+        keywords: `${d.city} ${d.region} ${d.alsoKnownAs || ''} ${corp} ${stateId} bus stand station enquiry phone contact`.toLowerCase(),
+      };
+    })
+  ),
   ...ROUTES.map((r) => ({
     title: `${r.originCity} to ${r.destinationCity} Bus Timetable`,
     sub: `${r.corporation} Express · ${r.frequency} · Fares from ${r.fares[0].price}`,
     url: `/${r.stateId}/routes/${r.slug}`,
-    action: 'View Timetable →',
-    keywords: `${r.originCity} ${r.destinationCity} bus time table timings ticket price fare schedule roadways express`.toLowerCase(),
+    action: 'View timetable',
+    keywords: `${r.originCity} ${r.destinationCity} bus time table timings ticket price fare schedule express`.toLowerCase(),
   })),
   {
-    title: 'Uttar Pradesh (UPSRTC) Roadways Directory',
-    sub: 'All 20 Transport Divisions & Bus Stands',
-    url: '/uttar-pradesh',
-    action: 'Open Directory →',
-    keywords: 'uttar pradesh up roadways upsrtc lucknow agra kanpur varanasi prayagraj',
-  },
-  {
-    title: 'Maharashtra (MSRTC) ST Bus Directory',
-    sub: 'All 20 Transport Divisions & Major Bus Depots',
-    url: '/maharashtra',
-    action: 'Open Directory →',
-    keywords: 'maharashtra msrtc st bus roadways mumbai pune thane nashik shirdi nagpur kolhapur',
-  },
-  {
-    title: 'Rajasthan (RSRTC) Roadways Directory',
-    sub: 'All 15 Transport Divisions & Sindhi Camp Terminal',
-    url: '/rajasthan',
-    action: 'Open Directory →',
-    keywords: 'rajasthan rsrtc roadways bus stand jaipur jodhpur udaipur ajmer kota bikaner',
-  },
-  {
-    title: 'Haryana Roadways Bus Directory',
-    sub: 'All 15 Transport Divisions & GT Road Terminals',
-    url: '/haryana',
-    action: 'Open Directory →',
-    keywords: 'haryana roadways bus stand gurugram faridabad rohtak panipat ambala hisar karnal',
-  },
-  {
-    title: 'Gujarat (GSRTC) Live Bus Tracker',
-    sub: '19,000+ Stations, 26 Divisions & GPS Tracking',
-    url: 'https://gsrtc.shivrajsinh.in',
-    action: 'Open Portal ↗',
-    keywords: 'gujarat gsrtc tracker live bus st bus ahmedabad surat vadodara rajkot gandhinagar',
-  },
-  {
-    title: 'National Emergency Transit Helpline (112)',
-    sub: 'All-India Police, Medical & Highway Emergency',
+    title: 'National Emergency Helpline (112)',
+    sub: 'All-India Police, Medical & Disaster Emergency',
     url: 'tel:112',
     action: 'Call 112',
-    keywords: 'emergency national helpline 112 police accident',
+    keywords: 'emergency national helpline 112 police accident ambulance',
   },
   {
-    title: 'National Highway Assistance Helpline (1033)',
-    sub: 'Toll-Free NHAI 24x7 Roadway & Towing Support',
+    title: 'National Highway Helpline (1033)',
+    sub: 'NHAI 24x7 Breakdown, Towing & Ambulance Support',
     url: 'tel:1033',
     action: 'Call 1033',
-    keywords: 'national highway helpline 1033 nhai expressways breakdown towing toll',
+    keywords: 'highway helpline 1033 nhai towing breakdown expressway',
   },
 ];
+
+const stateCodes: Record<string, string> = {
+  'uttar-pradesh': 'UP',
+  'maharashtra': 'MH',
+  'rajasthan': 'RJ',
+  'haryana': 'HR',
+  'himachal-pradesh': 'HP',
+  'uttarakhand': 'UK',
+  'punjab': 'PB',
+  'gujarat': 'GJ',
+};
+
+const topCorridors = ROUTES.slice(0, 8);
 ---
 
 <Base title={title} description={description} path="/">
 
-  <section class="hero-split">
-    <div>
-      <div class="badge-official">National Transit Directory · Public Helplines</div>
-      <h1 class="page-title">National State Road Transport Helpline &amp; Depot Directory</h1>
-      <p class="page-lede">
-        Verified enquiry phone numbers, regional division headquarters, and 24x7 passenger care desks across Indian State Road Transport Corporations (RTCs). Sourced directly from published government transport records.
-      </p>
+  <!-- Terminal Departure Board Header -->
+  <section class="hero-station-header">
+    <h1 class="page-title">National State Road Transport Directory</h1>
+    <p class="page-lede">
+      Verified inquiry telephone numbers, station master control desks, and intercity bus timetables across Indian State Road Transport Corporations. Sourced directly from official gazetted transport records.
+    </p>
+  </section>
 
-      <!-- National Bus Stand Quick Search -->
-      <div class="search-box-wrap" style="max-width:100%; margin: 1.5rem 0 0.5rem;">
-        <div class="search-input-group">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" id="national-search-input" class="search-input" placeholder="Search any bus stand (e.g. Lucknow, Pune, Agra, Varanasi)..." aria-label="Search all RTC bus stations" autocomplete="off" />
-        </div>
-        <div id="search-dropdown-menu" class="search-dropdown" style="display:none;" role="listbox"></div>
+  <!-- Above-The-Fold Ad Slot -->
+  <AdSlot slotId="8460038937" label="Advertisement" />
+
+  <!-- Terminal Search & Lookup Board -->
+  <section class="terminal-board" aria-label="Bus station enquiry lookup">
+    <div class="terminal-board-header">
+      <div class="terminal-board-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <span>Depot Enquiry &amp; Timetable Terminal</span>
+      </div>
+      <div style="font-size:0.75rem;color:var(--ink-muted);font-variant-numeric:tabular-nums;">
+        128 Divisional Stations · 70 Intercity Corridors
       </div>
     </div>
 
-    <div class="hero-visual-card">
-      <img
-        src="/images/hero-national.jpg"
-        alt="All-India State Road Transport Interstate Network and Major Bus Terminals"
-        class="hero-visual-img"
-        width="1400"
-        height="787"
-        loading="eager"
-        fetchpriority="high"
-      />
-      <div class="hero-visual-overlay">
-        <div>
-          <div class="hero-visual-tag">National Transit Grid</div>
-          <div class="hero-visual-sub">Interstate RTC Expressways &amp; Bus Terminals</div>
-        </div>
-        <span style="font-size:0.75rem;padding:0.2rem 0.6rem;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border-radius:4px;font-weight:700;">2026 Verified</span>
+    <div class="terminal-search-box">
+      <div class="search-input-group">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" id="national-search-input" class="search-input" placeholder="Type any station or route (e.g. Lucknow, Swargate, Jaipur, Shimla, Dehradun)..." aria-label="Search all RTC bus stations" autocomplete="off" />
+      </div>
+      <div id="search-dropdown-menu" class="search-dropdown" style="display:none;" role="listbox"></div>
+    </div>
+
+    <!-- State Matrix Grid -->
+    <div class="state-selector-matrix">
+      <div class="state-matrix-label">Select State Road Transport Corporation:</div>
+      <div class="state-grid-board">
+        {stateList.map((s) => {
+          const code = stateCodes[s.id] || 'IN';
+          const match = allDepotSources.find((src) => src.stateId === s.id);
+          const count = match ? match.depots.length : 0;
+          return (
+            <a class="state-board-card" href={`/${s.slug}`}>
+              <span class="state-code-badge">{code}</span>
+              <div class="state-board-info">
+                <span class="state-board-name">{s.name}</span>
+                <span class="state-board-corp">{s.corporation}</span>
+                <span class="state-board-count">{count} Divisional Stations · 24x7 Helpline</span>
+              </div>
+            </a>
+          );
+        })}
       </div>
     </div>
   </section>
 
-  <!-- Institutional Trust & Utility Strip -->
-  <div class="trust-strip">
-    <div class="trust-item">
-      <div class="trust-icon-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+  <!-- Popular Intercity Schedules Matrix -->
+  <section style="margin:2.5rem 0;" aria-labelledby="top-corridors-heading">
+    <h2 class="section-h2" id="top-corridors-heading">High-Frequency Intercity Timetables</h2>
+    <div class="table-container">
+      <table class="depot-table">
+        <thead>
+          <tr>
+            <th>Route Corridor</th>
+            <th>Operator</th>
+            <th>Frequency</th>
+            <th>First Bus</th>
+            <th>Last Bus</th>
+            <th>Starting Fare</th>
+            <th>Timetable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {topCorridors.map((r) => (
+            <tr>
+              <td class="depot-name-cell">
+                <a href={`/${r.stateId}/routes/${r.slug}`} style="color:var(--ink);text-decoration:none;font-weight:700;">
+                  {r.originCity} ⇄ {r.destinationCity}
+                </a>
+              </td>
+              <td style="font-size:0.85rem;color:var(--transit-amber);font-weight:600;">{r.corporation}</td>
+              <td style="font-size:0.85rem;">{r.frequency}</td>
+              <td class="depot-number-cell">{r.firstBus}</td>
+              <td class="depot-number-cell">{r.lastBus}</td>
+              <td class="depot-number-cell" style="color:var(--transit-green);font-weight:700;">{r.fares[0].price}</td>
+              <td>
+                <a href={`/${r.stateId}/routes/${r.slug}`} class="nav-state-pill" style="font-size:0.75rem;padding:0.25rem 0.5rem;">
+                  Schedule
+                </a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Mid-Content Ad Slot -->
+  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+
+  <!-- Emergency & Highway Fast-Dial Strip -->
+  <section style="margin:2rem 0;" aria-labelledby="emergency-strip-heading">
+    <h2 class="section-h2" id="emergency-strip-heading">National Passenger &amp; Highway Emergency Desks</h2>
+    <div class="emergency-matrix-strip">
+      <div class="emergency-matrix-cell">
+        <div class="emergency-matrix-text">
+          <span class="emergency-matrix-label">National Emergency</span>
+          <span class="emergency-matrix-desc">Police, Medical &amp; Fire</span>
+        </div>
+        <a class="btn-dial" href="tel:112">112</a>
       </div>
-      <div>
-        <div class="trust-title">Verified Records</div>
-        <div class="trust-sub">Published transport records</div>
+      <div class="emergency-matrix-cell">
+        <div class="emergency-matrix-text">
+          <span class="emergency-matrix-label">National Highway</span>
+          <span class="emergency-matrix-desc">Breakdown &amp; Towing</span>
+        </div>
+        <a class="btn-dial" href="tel:1033">1033</a>
+      </div>
+      <div class="emergency-matrix-cell">
+        <div class="emergency-matrix-text">
+          <span class="emergency-matrix-label">Women Helpline</span>
+          <span class="emergency-matrix-desc">24x7 Safety Powerline</span>
+        </div>
+        <a class="btn-dial" href="tel:1090">1090</a>
+      </div>
+      <div class="emergency-matrix-cell">
+        <div class="emergency-matrix-text">
+          <span class="emergency-matrix-label">Accident Relief</span>
+          <span class="emergency-matrix-desc">Emergency Road Medical</span>
+        </div>
+        <a class="btn-dial" href="tel:1073">1073</a>
       </div>
     </div>
-    <div class="trust-item">
-      <div class="trust-icon-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M7 7h10"/><path d="M7 12h10"/><path d="M7 17h10"/></svg>
-      </div>
-      <div>
-        <div class="trust-title">40+ Divisions</div>
-        <div class="trust-sub">UPSRTC, MSRTC &amp; GSRTC</div>
-      </div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-icon-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      </div>
-      <div>
-        <div class="trust-title">24x7 Helplines</div>
-        <div class="trust-sub">Direct phone dial access</div>
-      </div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-icon-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      </div>
-      <div>
-        <div class="trust-title">1-Tap Dial</div>
-        <div class="trust-sub">Instant station master contact</div>
-      </div>
-    </div>
-  </div>
+  </section>
+
+  <!-- Bottom Ad Slot -->
+  <AdSlot slotId="8460038937" label="Sponsored" />
 
   <script define:vars={{ allSearchEntries }}>
     const input = document.getElementById('national-search-input');
@@ -233,12 +229,12 @@ const allSearchEntries = [
 
         const matches = allSearchEntries.filter((item) =>
           item.keywords.includes(q) || item.title.toLowerCase().includes(q)
-        ).slice(0, 7);
+        ).slice(0, 8);
 
         if (matches.length === 0) {
           dropdown.innerHTML = `
-            <div style="padding:1rem 1.15rem;font-size:0.88rem;color:var(--ink-light);text-align:center;">
-              No bus stands matched "<strong>${q}</strong>". Try searching a city name or explore states below.
+            <div style="padding:1rem 1.15rem;font-size:0.88rem;color:var(--ink-muted);text-align:center;">
+              No bus stands matched "<strong>${q}</strong>". Try searching a city name or select a state above.
             </div>
           `;
           dropdown.style.display = 'block';
@@ -257,7 +253,6 @@ const allSearchEntries = [
         dropdown.style.display = 'block';
       });
 
-      // Close dropdown if user clicks outside
       document.addEventListener('click', (ev) => {
         if (!input.contains(ev.target as Node) && !dropdown.contains(ev.target as Node)) {
           dropdown.style.display = 'none';
@@ -265,180 +260,5 @@ const allSearchEntries = [
       });
     }
   </script>
-
-  <!-- Above-The-Fold Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
-
-  <!-- Active & Regional State Hubs Grid -->
-  <section id="states" aria-labelledby="state-hubs-heading">
-    <h2 class="section-h2" id="state-hubs-heading">State Transport Corporations (RTCs)</h2>
-    <p style="color:var(--ink-light);font-size:0.9rem;margin-bottom:1.25rem;">
-      Select an operating state road transport corporation to access regional division helplines, station master desks, and terminal enquiry numbers:
-    </p>
-
-    <div class="state-hub-grid">
-      <!-- Active States (UP, Maharashtra, Rajasthan, Haryana) -->
-      {stateList.map((s) => {
-        const borderCol = s.id === 'uttar-pradesh' ? '#1d4ed8' : s.id === 'maharashtra' ? '#b91c1c' : s.id === 'rajasthan' ? '#d97706' : '#15803d';
-        const badgeCls = s.id === 'uttar-pradesh' ? 'badge-upsrtc' : s.id === 'maharashtra' ? 'badge-msrtc' : s.id === 'rajasthan' ? 'badge-rsrtc' : 'badge-hrtc';
-        const desc =
-          s.id === 'uttar-pradesh'
-            ? 'All 20 transport divisions including Lucknow, Kanpur, Agra, Varanasi, Prayagraj, Noida, and Ghaziabad depots.'
-            : s.id === 'maharashtra'
-            ? 'All 20 transport divisions including Pune Swargate, Mumbai Central, Thane, Nashik CBS, Shirdi, and Nagpur depots.'
-            : s.id === 'rajasthan'
-            ? 'All 15 principal RSRTC divisions including Jaipur Sindhi Camp, Jodhpur, Udaipur, Ajmer, Kota, and Bikaner depots.'
-            : 'All 15 key Haryana Roadways divisions including Gurugram, Faridabad, Rohtak, Panipat, Ambala, and Karnal depots.';
-
-        return (
-          <a class="state-card" href={`/${s.slug}`} style={`border-left: 4px solid ${borderCol};`}>
-            <div>
-              <span class={`state-card-corp-badge ${badgeCls}`}>
-                {s.corporation} · {s.name}
-              </span>
-              <h3 class="state-card-name">{s.corporationFull}</h3>
-              <p class="state-card-desc">{desc}</p>
-            </div>
-            <div class="state-card-meta">
-              <span class="state-badge-active">Verified Directory Live</span>
-              <span style="color:var(--cobalt);font-weight:700;">Explore Depots &amp; Routes →</span>
-            </div>
-          </a>
-        );
-      })}
-
-      <!-- Upcoming States & Sibling Sister Portals -->
-      {upcomingStates.map((u) => {
-        const badgeClass = u.corporation === 'GSRTC' ? 'badge-gsrtc' : u.corporation === 'KSRTC' ? 'badge-ksrtc' : 'badge-hrtc';
-        const borderColor = u.corporation === 'GSRTC' ? '#059669' : u.corporation === 'KSRTC' ? '#7c3aed' : '#16a34a';
-        return (
-          <a class="state-card" href={u.link} target={u.isExternal ? '_blank' : undefined} rel={u.isExternal ? 'noopener' : undefined} style={`border-left: 4px solid ${borderColor};`}>
-            <div>
-              <span class={`state-card-corp-badge ${badgeClass}`}>
-                {u.corporation} · {u.name}
-              </span>
-              <h3 class="state-card-name">{u.name} Roadways</h3>
-              <p class="state-card-desc">{u.desc}</p>
-            </div>
-            <div class="state-card-meta">
-              <span style="font-weight:600;color:var(--ink-light);">{u.status}</span>
-              <span style="color:var(--cobalt);font-weight:700;">{u.isExternal ? 'Open Portal ↗' : 'Coming Soon'}</span>
-            </div>
-          </a>
-        );
-      })}
-    </div>
-  </section>
-
-  <!-- Popular Intercity Bus Timetables & Schedules Grid -->
-  <section aria-labelledby="popular-routes-heading" style="margin-top:2.5rem;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
-      <div>
-        <h2 class="section-h2" id="popular-routes-heading" style="margin-bottom:0.25rem;">Popular Intercity Bus Timetables &amp; Fares</h2>
-        <p style="color:var(--ink-light);font-size:0.9rem;">Verified departure times, ticket prices, and station enquiry numbers for high-frequency express corridors:</p>
-      </div>
-    </div>
-
-    <div class="sibling-grid" style="grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));">
-      {ROUTES.slice(0, 8).map((r) => (
-        <a class="sibling-link" href={`/${r.stateId}/routes/${r.slug}`} style="padding:1.1rem;display:flex;flex-direction:column;justify-content:space-between;">
-          <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem;">
-              <span style="font-size:0.75rem;font-weight:700;color:var(--cobalt);text-transform:uppercase;">{r.corporation}</span>
-              <span style="font-size:0.72rem;background:var(--emerald-light);color:var(--emerald);padding:0.1rem 0.45rem;border-radius:4px;font-weight:700;">{r.durationHours}</span>
-            </div>
-            <div style="font-size:1.05rem;font-weight:700;color:var(--ink);">{r.originCity} to {r.destinationCity}</div>
-            <div style="font-size:0.8rem;color:var(--ink-light);margin-top:0.25rem;">{r.distanceKm} km · {r.frequency} · First {r.firstBus}</div>
-          </div>
-          <div style="margin-top:0.85rem;padding-top:0.6rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;">
-            <span style="font-weight:700;color:var(--emerald);">Fares from {r.fares[0].price}</span>
-            <span style="color:var(--cobalt);font-weight:700;">View Timetable →</span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <!-- Mid-Content Ad Slot -->
-  <AdSlot slotId="8460038937" label="Advertisement" />
-
-  <!-- Nationwide Emergency & Travel Helplines -->
-  <section aria-labelledby="emergency-dashboard-heading" style="margin-top:2.5rem;">
-    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
-      <div>
-        <h2 class="section-h2" id="emergency-dashboard-heading" style="margin-bottom:0.25rem;">National Transit Emergency Dashboard</h2>
-        <p style="color:var(--ink-light);font-size:0.88rem;">24x7 Government emergency desks for transit incidents, highway safety &amp; passenger medical support:</p>
-      </div>
-      <span class="badge-official" style="background:#fef2f2;color:#dc2626;border-color:#fecaca;">Toll-Free 24x7</span>
-    </div>
-
-    <div class="emergency-dashboard">
-      <div class="emergency-item-card">
-        <div>
-          <div class="emergency-num-badge red">112</div>
-          <div class="emergency-label">National Emergency</div>
-          <p class="emergency-desc">All-India unified helpline for police emergency, fire brigade, and urgent ambulance dispatch.</p>
-        </div>
-        <a class="btn-emergency-call" href="tel:112">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span>Dial 112</span>
-        </a>
-      </div>
-
-      <div class="emergency-item-card">
-        <div>
-          <div class="emergency-num-badge amber">1033</div>
-          <div class="emergency-label">National Highways (NHAI)</div>
-          <p class="emergency-desc">Expressway assistance, 24x7 towing, road clearance, crane support &amp; toll queries.</p>
-        </div>
-        <a class="btn-emergency-call" href="tel:1033">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span>Dial 1033</span>
-        </a>
-      </div>
-
-      <div class="emergency-item-card">
-        <div>
-          <div class="emergency-num-badge purple">1090</div>
-          <div class="emergency-label">Women Powerline</div>
-          <p class="emergency-desc">Dedicated passenger safety and immediate assistance for women traveling on state buses.</p>
-        </div>
-        <a class="btn-emergency-call" href="tel:1090">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span>Dial 1090</span>
-        </a>
-      </div>
-
-      <div class="emergency-item-card">
-        <div>
-          <div class="emergency-num-badge rose">1073</div>
-          <div class="emergency-label">Road Accident Emergency</div>
-          <p class="emergency-desc">Immediate highway trauma rescue, medical triage, and road incident response coordination.</p>
-        </div>
-        <a class="btn-emergency-call" href="tel:1073">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <span>Dial 1073</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Passenger Advice & Best Practices -->
-  <section aria-labelledby="advice-heading" style="margin-top:2.5rem;">
-    <h2 class="section-h2" id="advice-heading">Using RTC Enquiry Helplines Effectively</h2>
-    <div style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-sm);">
-      <p style="color:var(--ink-muted);font-size:0.95rem;line-height:1.7;margin-bottom:1rem;">
-        When contacting state road transport enquiry desks for bus timings or platform allocations, have the following details ready to assist duty controllers:
-      </p>
-      <ol style="padding-left:1.25rem;color:var(--ink-muted);font-size:0.92rem;display:flex;flex-direction:column;gap:0.6rem;">
-        <li><strong>Service Class:</strong> State whether you are inquiring about Ordinary (Gramin), Express, Gurjarnagri, Janrath (AC 3x2), or Premium Sleeper/Volvo services.</li>
-        <li><strong>Route &amp; Intermediate Stops:</strong> Mention both starting depot and final destination, as long-distance buses frequently stop at regional staging points without entering town centers.</li>
-        <li><strong>Early Morning &amp; Night Services:</strong> Check whether late-night services operate daily or exclusively on select weekdays before proceeding to rural boarding points.</li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- Pre-Footer Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored" />
 
 </Base>

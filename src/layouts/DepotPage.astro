@@ -113,41 +113,40 @@ const jsonLd = [
 <Base title={title} description={description} keywords={keywords} path={path} jsonLd={jsonLd} breadcrumbs={breadcrumbs}>
   
   <section class="page-hero">
-    <div class="badge-official">Official Government Sourced · Verified 2026</div>
+    <div style="font-size:0.8rem;font-weight:700;color:var(--transit-amber);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.35rem;">
+      {state.corporation} Divisional Headquarters · {state.name}
+    </div>
     <h1 class="page-title">{cityName} Bus Station Contact Number &amp; Enquiry</h1>
-    <p class="bilingual-badge" style="color: var(--color-primary); font-size: 0.95rem; font-weight: 600; margin: -0.25rem 0 0.5rem;">
+    <p class="bilingual-badge">
       {state.corporation === 'MSRTC' ? `${cityName} एसटी बस स्थानक संपर्क क्रमांक व चौकशी कक्ष` : `${cityName} रोडवेज बस स्टैंड पूछताछ नंबर एवं समय सारणी`}
     </p>
     <p class="page-lede">
-      Official {state.corporation} ({state.corporation}) Roadways enquiry phone numbers for <strong>{cityName}</strong>{alias}. Direct telephone access to station master counters, platform inquiry desks, and the 24x7 statewide passenger helpline.
+      Official {state.corporation} inquiry phone numbers for <strong>{cityName}</strong>{alias}. Direct telephone access to station master counters, platform inquiry desks, and the 24x7 statewide passenger helpline.
     </p>
   </section>
 
-  <!-- 1-Tap Quick Call Card -->
-  <section class="action-card" aria-label="Quick Call Actions">
-    <div class="action-card-header">
-      <span class="action-card-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span>Instant Phone Dial (Tap to Call)</span>
-      </span>
-      <span class="action-card-subtitle">{cityName} Depot Enquiry Counters</span>
+  <!-- Instant Dial Action Strip -->
+  <section class="dial-action-strip" aria-label="Direct Phone Dial">
+    <div class="dial-strip-header">
+      <div class="dial-strip-title">{cityName} Station Master &amp; Inquiry Counters</div>
+      <div class="dial-strip-sub">Direct telephone connection to platform desks</div>
     </div>
 
     <div class="call-button-group">
       {stands.flatMap((s) => s.numbers).slice(0, 4).map((n) => (
-        <a class="btn-call" href={`tel:${tel(n)}`}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <a class="btn-dial" href={`tel:${tel(n)}`}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
           <span>Call {n}</span>
         </a>
       ))}
-      <a class="btn-call secondary" href={`tel:${tel(state.helpline.primary)}`}>
-        <span>Toll-Free Helpline: {state.helpline.primary}</span>
+      <a class="btn-dial secondary" href={`tel:${tel(state.helpline.primary)}`}>
+        <span>Helpline: {state.helpline.primary}</span>
       </a>
     </div>
   </section>
 
   <!-- Above-The-Fold Ad Slot -->
-  <AdSlot slotId="8460038937" label="Sponsored Advertisement" />
+  <AdSlot slotId="8460038937" label="Advertisement" />
 
   <!-- Complete Bus Stand Table -->
   <section aria-labelledby="depot-table-heading">
@@ -158,7 +157,7 @@ const jsonLd = [
           <tr>
             <th scope="col">Terminal / Station Name</th>
             <th scope="col">Enquiry Phone Number(s)</th>
-            <th scope="col">Counter Action</th>
+            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -174,7 +173,7 @@ const jsonLd = [
                 ))}
               </td>
               <td>
-                <a class="nav-pill-btn" href={`tel:${tel(s.numbers[0])}`}>Call Desk</a>
+                <a class="nav-state-pill" href={`tel:${tel(s.numbers[0])}`}>Call Desk</a>
               </td>
             </tr>
           ))}
@@ -187,21 +186,15 @@ const jsonLd = [
   <AdSlot slotId="8460038937" label="Advertisement" />
 
   <!-- Statewide Backup Support -->
-  <section class="action-card" style="border-left-color: var(--emerald);" aria-label="Support Information">
-    <div class="action-card-header">
-      <span class="action-card-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span>If Local Depot Lines Are Busy</span>
-      </span>
-      <span class="action-card-subtitle">24x7 Central Passenger Support</span>
-    </div>
-    <p style="color:var(--ink-muted);font-size:0.9rem;line-height:1.6;">
-      {state.helpline.label} provides round-the-clock telephone support for bus schedule confirmations, fare inquiries, and passenger grievances across {state.name}:
-      <a style="color:var(--cobalt);font-weight:700;text-decoration:none;" href={`tel:${tel(state.helpline.primary)}`}>
+  <div style="background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--transit-amber);border-radius:var(--radius-sm);padding:1rem 1.25rem;margin:1.5rem 0;">
+    <div style="font-weight:700;font-size:0.92rem;color:var(--ink);margin-bottom:0.25rem;">Statewide Passenger Helpline Support</div>
+    <p style="color:var(--ink-secondary);font-size:0.88rem;line-height:1.55;">
+      If local enquiry lines are busy during peak departure hours, commuters across {state.name} can dial the 24x7 centralized customer care helpline: 
+      <a style="color:var(--transit-amber);font-weight:700;text-decoration:none;" href={`tel:${tel(state.helpline.primary)}`}>
         {state.helpline.primary}
       </a>.
     </p>
-  </section>
+  </div>
 
   <!-- Frequently Asked Questions (FAQ Section) -->
   <section class="faq-section" aria-labelledby="faq-heading">

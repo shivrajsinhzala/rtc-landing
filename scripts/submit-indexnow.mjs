@@ -29,22 +29,30 @@ const payload = {
   urlList: matches,
 };
 
+const endpoints = [
+  'https://yandex.com/indexnow',
+  'https://api.indexnow.org/indexnow',
+  'https://www.bing.com/indexnow',
+];
+
 async function submit() {
-  try {
-    const res = await fetch('https://api.indexnow.org/IndexNow', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      body: JSON.stringify(payload),
-    });
-    console.log(`IndexNow status: ${res.status} ${res.statusText}`);
-    if (res.ok || res.status === 200 || res.status === 202) {
-      console.log('✓ Successfully submitted URLs to IndexNow network (Bing, Yandex, Copilot).');
-    } else {
-      const txt = await res.text();
-      console.warn(`IndexNow returned: ${txt}`);
+  for (const ep of endpoints) {
+    try {
+      const res = await fetch(ep, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(payload),
+      });
+      console.log(`${ep} status: ${res.status} ${res.statusText}`);
+      if (res.ok || res.status === 200 || res.status === 202) {
+        console.log(`✓ Successfully submitted to ${ep}`);
+      } else {
+        const txt = await res.text();
+        console.warn(`${ep} returned: ${txt}`);
+      }
+    } catch (err) {
+      console.error(`Error submitting to ${ep}:`, err.message);
     }
-  } catch (err) {
-    console.error('Error submitting to IndexNow:', err.message);
   }
 }
 

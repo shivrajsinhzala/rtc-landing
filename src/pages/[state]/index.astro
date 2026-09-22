@@ -6,6 +6,10 @@ import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.
 import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
 import { DEPOTS as RJ_DEPOTS } from '../../data/rajasthan/depots.data.mjs';
 import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
+import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs';
+import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
+import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
+import { DEPOTS as GJ_DEPOTS } from '../../data/gujarat/depots.data.mjs';
 import { ROUTES } from '../../data/routes.data.mjs';
 
 export function getStaticPaths() {
@@ -14,6 +18,10 @@ export function getStaticPaths() {
     'maharashtra': MH_DEPOTS,
     'rajasthan': RJ_DEPOTS,
     'haryana': HR_DEPOTS,
+    'himachal-pradesh': HP_DEPOTS,
+    'uttarakhand': UK_DEPOTS,
+    'punjab': PB_DEPOTS,
+    'gujarat': GJ_DEPOTS,
   };
   return Object.keys(sources).map((stateId) => ({
     params: { state: stateId },
@@ -82,7 +90,7 @@ const jsonLd = [
 
   <section class="hero-split">
     <div>
-      <div class="badge-official">Official State Transport Directory · {state.name}</div>
+      <div style="font-size:0.8rem;font-weight:700;color:var(--transit-amber);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:0.35rem;">Official State Transport Directory · {state.name}</div>
       <h1 class="page-title">{state.corporation} Bus Station Contact Numbers &amp; Enquiry</h1>
       <p class="page-lede">
         Official enquiry phone numbers for all <strong>{depots.length} transport divisions</strong> and <strong>{totalStands} bus terminals</strong> operated by {state.corporationFull} ({state.corporation}) across {state.name}. Sourced directly from published government transit records.
