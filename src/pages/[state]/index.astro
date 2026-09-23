@@ -10,6 +10,8 @@ import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs
 import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
 import { ROUTES } from '../../data/routes.data.mjs';
+// Utility guides exist only for states with a sourced guides file (UP today).
+import { GUIDES as UP_GUIDES } from '../../data/uttar-pradesh/guides.data.mjs';
 
 export function getStaticPaths() {
   const sources = {
@@ -21,13 +23,16 @@ export function getStaticPaths() {
     'uttarakhand': UK_DEPOTS,
     'punjab': PB_DEPOTS,
   };
+  const guideSources: Record<string, any[]> = {
+    'uttar-pradesh': UP_GUIDES,
+  };
   return Object.keys(sources).map((stateId) => ({
     params: { state: stateId },
-    props: { state: STATES[stateId], depots: sources[stateId] },
+    props: { state: STATES[stateId], depots: sources[stateId], guides: guideSources[stateId] ?? [] },
   }));
 }
 
-const { state, depots } = Astro.props;
+const { state, depots, guides } = Astro.props;
 const title = `${state.corporation} Bus Station Contact Numbers & Timetables — ${state.name}`;
 const description = `Directory of ${state.corporation} (${state.corporationFull}) bus stand enquiry phone numbers across ${state.name}. Reference phone numbers for all ${depots.length} regional transport divisions, bus timetables & 24x7 helpline.`;
 const path = `/${state.slug}`;
@@ -239,6 +244,33 @@ const jsonLd = [
         })}
       </div>
     </section>
+
+    <!-- State Utility Guides (helpline, fare, booking, timetable) -->
+    {guides.length > 0 && (
+      <section aria-labelledby="state-guides-heading" style="margin:2.5rem 0;">
+        <div class="section-heading-row">
+          <div>
+            <h2 class="section-title" id="state-guides-heading" style="font-size:1.55rem;">
+              {state.corporation} Fare, Booking &amp; Helpline Guides
+            </h2>
+            <p class="section-subtitle">How {state.name} bus fares, tickets, timetables and the passenger helpline work — from official sources:</p>
+          </div>
+        </div>
+        <div id="guides-grid" class="rtc-grid" style="grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));">
+          {guides.map((g) => (
+            <a class="rtc-card" href={`/${state.slug}/${g.slug}`}>
+              <div>
+                <h3 class="rtc-card-title" style="font-size:1.05rem;">{g.navLabel}</h3>
+                <p style="font-size:0.82rem;color:var(--slate-muted);margin-top:0.3rem;line-height:1.5;">{g.description}</p>
+              </div>
+              <div class="rtc-card-meta">
+                <span style="color:var(--primary-blue);font-weight:600;">Read guide</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- Mid-Content Ad Slot -->
     <AdSlot slotId="8460038937" label="Advertisement" />

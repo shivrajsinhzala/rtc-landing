@@ -16,6 +16,7 @@ import { DEPOTS as HR_DEPOTS } from '../src/data/haryana/depots.data.mjs';
 import { DEPOTS as HP_DEPOTS } from '../src/data/himachal-pradesh/depots.data.mjs';
 import { DEPOTS as UK_DEPOTS } from '../src/data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../src/data/punjab/depots.data.mjs';
+import { GUIDES as UP_GUIDES } from '../src/data/uttar-pradesh/guides.data.mjs';
 import { ROUTES } from '../src/data/routes.data.mjs';
 
 const DEPOT_SOURCES = {
@@ -111,6 +112,21 @@ for (const p of corePages) {
   } else {
     pass(`core: ${p.path} (${p.label}) built successfully`);
   }
+}
+
+// Utility guides: each must build and be linked from its state hub. Only states with a sourced
+// guides file are checked (UP today).
+const GUIDE_SOURCES = { 'uttar-pradesh': UP_GUIDES };
+for (const [stateId, guides] of Object.entries(GUIDE_SOURCES)) {
+  const hubFile = fileFor(`/${stateId}`);
+  const hub = fs.existsSync(hubFile) ? fs.readFileSync(hubFile, 'utf8') : '';
+  let issues = 0;
+  for (const g of guides) {
+    const gp = `/${stateId}/${g.slug}`;
+    if (!fs.existsSync(fileFor(gp))) { fail(`${gp} did not build`); issues++; continue; }
+    if (!hub.includes(gp)) { fail(`hub /${stateId} does not link to guide ${gp}`); issues++; }
+  }
+  if (!issues) pass(`${stateId}: all ${guides.length} utility guides built and linked from the hub`);
 }
 
 console.log(failures ? `\n${failures} check(s) failed.` : '\nAll checks passed.');

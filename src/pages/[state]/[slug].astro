@@ -1,5 +1,6 @@
 ---
 import DepotPage from '../../layouts/DepotPage.astro';
+import GuidePage from '../../layouts/GuidePage.astro';
 import { STATES } from '../../config/states.mjs';
 import { DEPOTS as UP_DEPOTS, depotSlug } from '../../data/uttar-pradesh/depots.data.mjs';
 import { DEPOTS as MH_DEPOTS } from '../../data/maharashtra/depots.data.mjs';
@@ -8,6 +9,9 @@ import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
 import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs';
 import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
+// Utility guides live per state; only states with a sourced guides file appear here. Depot and
+// guide pages share the /<state>/<slug> namespace, so they must share this one route.
+import { GUIDES as UP_GUIDES } from '../../data/uttar-pradesh/guides.data.mjs';
 
 /**
  * One dynamic route for every state's depot pages. Adding a second state means adding its
@@ -24,25 +28,54 @@ export function getStaticPaths() {
     'uttarakhand': UK_DEPOTS,
     'punjab': PB_DEPOTS,
   };
+  const guideSources = {
+    'uttar-pradesh': UP_GUIDES,
+  };
   const paths = [];
   for (const [stateId, depots] of Object.entries(sources)) {
     depots.forEach((depot, i) => {
       const siblings = [depots[(i - 1 + depots.length) % depots.length], depots[(i + 1) % depots.length]];
       paths.push({
         params: { state: stateId, slug: depotSlug(depot.city) },
-        props: { state: STATES[stateId], depot, siblings },
+        props: { kind: 'depot', state: STATES[stateId], depot, siblings },
+      });
+    });
+  }
+  for (const [stateId, guides] of Object.entries(guideSources)) {
+    guides.forEach((guide) => {
+      paths.push({
+        params: { state: stateId, slug: guide.slug },
+        props: { kind: 'guide', state: STATES[stateId], guide, allGuides: guides },
       });
     });
   }
   return paths;
 }
 
-const { state, depot, siblings } = Astro.props;
-const cityName = depot.alsoKnownAs ? depot.region : depot.city[0].toUpperCase() + depot.city.slice(1);
-const path = `/${state.slug}/${depotSlug(depot.city)}`;
-const siblingLinks = siblings.map((s) => ({
-  href: `/${state.slug}/${depotSlug(s.city)}`,
-  label: `${s.alsoKnownAs ? s.region : s.city[0].toUpperCase() + s.city.slice(1)} bus station contact number`,
-}));
+const props = Astro.props;
+const { state } = props;
+const cap = (s) => s[0].toUpperCase() + s.slice(1);
+
+let depotView = null;
+let guideView = null;
+if (props.kind === 'depot') {
+  const { depot, siblings } = props;
+  depotView = {
+    cityName: depot.alsoKnownAs ? depot.region : cap(depot.city),
+    path: `/${state.slug}/${depotSlug(depot.city)}`,
+    siblingLinks: siblings.map((s) => ({
+      href: `/${state.slug}/${depotSlug(s.city)}`,
+      label: `${s.alsoKnownAs ? s.region : cap(s.city)} bus station contact number`,
+    })),
+  };
+} else {
+  const { guide, allGuides } = props;
+  guideView = {
+    path: `/${state.slug}/${guide.slug}`,
+    otherGuides: allGuides.filter((g) => g.slug !== guide.slug).map((g) => ({ href: `/${state.slug}/${g.slug}`, label: g.navLabel })),
+  };
+}
 ---
-<DepotPage state={state} depot={depot} cityName={cityName} path={path} siblingLinks={siblingLinks} hubHref={`/${state.slug}`} />
+{props.kind === 'depot'
+  ? <DepotPage state={state} depot={props.depot} cityName={depotView.cityName} path={depotView.path} siblingLinks={depotView.siblingLinks} hubHref={`/${state.slug}`} />
+  : <GuidePage state={state} guide={props.guide} path={guideView.path} otherGuides={guideView.otherGuides} />}
