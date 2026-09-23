@@ -9,7 +9,6 @@ import { DEPOTS as HR_DEPOTS } from '../data/haryana/depots.data.mjs';
 import { DEPOTS as HP_DEPOTS } from '../data/himachal-pradesh/depots.data.mjs';
 import { DEPOTS as UK_DEPOTS } from '../data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../data/punjab/depots.data.mjs';
-import { DEPOTS as GJ_DEPOTS } from '../data/gujarat/depots.data.mjs';
 import { ROUTES } from '../data/routes.data.mjs';
 
 const title = 'RTC Portal — Indian State Road Transport Directory & Bus Timetables';
@@ -23,7 +22,6 @@ const allDepotSources = [
   { stateId: 'himachal-pradesh', corp: 'HRTC', depots: HP_DEPOTS },
   { stateId: 'uttarakhand', corp: 'UTC', depots: UK_DEPOTS },
   { stateId: 'punjab', corp: 'PUNBUS', depots: PB_DEPOTS },
-  { stateId: 'gujarat', corp: 'GSRTC', depots: GJ_DEPOTS },
 ];
 
 // Rich Search Entries categorized into RTCs, Stations, Routes, Cities
@@ -84,7 +82,6 @@ const stateCodes: Record<string, string> = {
   'himachal-pradesh': 'HP',
   'uttarakhand': 'UK',
   'punjab': 'PB',
-  'gujarat': 'GJ',
 };
 
 // Popular 6 routes for homepage display

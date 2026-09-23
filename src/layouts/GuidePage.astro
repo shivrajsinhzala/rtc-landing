@@ -1,0 +1,52 @@
+---
+import Base from './Base.astro';
+
+/**
+ * Renders one state-level informational guide. Like DepotPage, everything is props — no state
+ * name is hardcoded, so this shell serves every state's guides unchanged.
+ */
+interface Props {
+  state: { name: string; corporation: string; slug: string; helpline: { primary: string } };
+  guide: { slug: string; title: string; description: string; h1: string; bodyHtml: string; faq?: { q: string; a: string }[] };
+  path: string;
+  otherGuides: { href: string; label: string }[];
+}
+const { state, guide, path, otherGuides } = Astro.props;
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'WebPage', name: guide.title, description: guide.description,
+    about: { '@type': 'Organization', name: state.corporation } },
+];
+if (guide.faq?.length) {
+  jsonLd.push({
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: guide.faq.map(({ q, a }) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+  });
+}
+---
+<Base title={guide.title} description={guide.description} path={path} jsonLd={jsonLd}>
+  <p><a href={`/${state.slug}`}>&larr; All {state.name} bus info</a></p>
+  <h1 set:html={guide.h1} />
+  <Fragment set:html={guide.bodyHtml} />
+
+  <div class="ad-slot-wrap">
+    <p class="ad-label">Advertisement</p>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7164999486301748" data-ad-slot="0000000000" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  </div>
+
+  {guide.faq && guide.faq.length > 0 && (
+    <>
+      <h2>Questions people ask</h2>
+      {guide.faq.map(({ q, a }) => (
+        <div class="card"><p style="margin:0 0 .4rem;font-weight:600;">{q}</p><p style="margin:0;">{a}</p></div>
+      ))}
+    </>
+  )}
+
+  {otherGuides.length > 0 && (
+    <>
+      <h2>More {state.name} guides</h2>
+      <ul class="plain">{otherGuides.map((g) => <li><a href={g.href}>{g.label}</a></li>)}</ul>
+    </>
+  )}
+</Base>

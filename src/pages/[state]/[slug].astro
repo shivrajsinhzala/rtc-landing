@@ -8,7 +8,6 @@ import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
 import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs';
 import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
-import { DEPOTS as GJ_DEPOTS } from '../../data/gujarat/depots.data.mjs';
 
 /**
  * One dynamic route for every state's depot pages. Adding a second state means adding its
@@ -24,7 +23,6 @@ export function getStaticPaths() {
     'himachal-pradesh': HP_DEPOTS,
     'uttarakhand': UK_DEPOTS,
     'punjab': PB_DEPOTS,
-    'gujarat': GJ_DEPOTS,
   };
   const paths = [];
   for (const [stateId, depots] of Object.entries(sources)) {

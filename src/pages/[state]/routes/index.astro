@@ -5,7 +5,7 @@ import { STATES } from '../../../config/states.mjs';
 import { ROUTES } from '../../../data/routes.data.mjs';
 
 export function getStaticPaths() {
-  const stateIds = ['uttar-pradesh', 'maharashtra', 'rajasthan', 'haryana', 'himachal-pradesh', 'uttarakhand', 'punjab', 'gujarat'];
+  const stateIds = ['uttar-pradesh', 'maharashtra', 'rajasthan', 'haryana', 'himachal-pradesh', 'uttarakhand', 'punjab'];
   return stateIds.map((stateId) => ({
     params: { state: stateId },
     props: {

@@ -120,18 +120,6 @@ export const STATES = {
     lang: 'en',
     htmlLang: 'en-IN',
   },
-  'gujarat': {
-    id: 'gujarat',
-    slug: 'gujarat',
-    name: 'Gujarat',
-    corporation: 'GSRTC',
-    corporationFull: 'Gujarat State Road Transport Corporation',
-    brand: 'GSRTC Gujarat ST Bus Info',
-    officialSite: 'https://gsrtc.in',
-    helpline: { primary: '1800-233-666666', label: '24x7 GSRTC toll-free passenger helpline' },
-    lang: 'en',
-    htmlLang: 'en-IN',
-  },
 };
 
 export const stateList = Object.values(STATES);

@@ -9,10 +9,9 @@ import { DEPOTS as HR_DEPOTS } from '../../data/haryana/depots.data.mjs';
 import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs';
 import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
-import { DEPOTS as GJ_DEPOTS } from '../../data/gujarat/depots.data.mjs';
 
 const title = 'State Road Transport Corporations (RTCs) Directory — India';
-const description = 'Complete directory of Indian State Road Transport Corporations (RTCs). Directory references for UPSRTC, MSRTC, RSRTC, Haryana Roadways, HRTC, UTC, PUNBUS, and GSRTC.';
+const description = 'Complete directory of Indian State Road Transport Corporations (RTCs). Directory references for UPSRTC, MSRTC, RSRTC, Haryana Roadways, HRTC, UTC, PUNBUS.';
 
 const depotCounts: Record<string, number> = {
   'uttar-pradesh': UP_DEPOTS.length,
@@ -22,7 +21,6 @@ const depotCounts: Record<string, number> = {
   'himachal-pradesh': HP_DEPOTS.length,
   'uttarakhand': UK_DEPOTS.length,
   'punjab': PB_DEPOTS.length,
-  'gujarat': GJ_DEPOTS.length,
 };
 
 const stateCodes: Record<string, string> = {
@@ -33,7 +31,6 @@ const stateCodes: Record<string, string> = {
   'himachal-pradesh': 'HP',
   'uttarakhand': 'UK',
   'punjab': 'PB',
-  'gujarat': 'GJ',
 };
 
 const breadcrumbs = [
