@@ -121,8 +121,15 @@ const baseJsonLd: unknown[] = [
 
 <!-- Theme Colors & Favicons -->
 <meta name="theme-color" content="#152339" />
-<link rel="icon" href="/icons/logo.svg" type="image/svg+xml" />
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<!-- Google's favicon crawler does not read SVG and looks for /favicon.ico plus a PNG rel="icon"
+     of at least 48x48; SVG-only is exactly why Search showed no favicon. Real raster files first,
+     SVG kept last for browsers that prefer it. -->
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="48x48" href="/icons/icon-48.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/icon-96.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
 
 <!-- JSON-LD Structured Data -->
 {baseJsonLd.map((block) => (
