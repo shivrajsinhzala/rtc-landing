@@ -22,8 +22,8 @@ const alias = depot.alsoKnownAs ? ` (${depot.region} division HQ, also known as 
 const primaryStand = stands[0];
 const primaryNumber = primaryStand.numbers[0];
 
-const title = `${cityName} Bus Stand Contact Number & Enquiry — ${state.corporation}`;
-const description = `Published directory reference for ${state.corporation} ${cityName} bus stand enquiry telephone numbers: ${primaryNumber}. Sourced contact numbers for ${stands.length} depot counters, station master desks, bus schedules, and 24x7 helpline.`;
+const title = `${cityName} Bus Stand Contact Number: ${primaryNumber} — ${state.corporation}`;
+const description = `${state.corporation} ${cityName} bus stand enquiry number: ${primaryNumber}. Tap-to-call phone numbers for ${stands.length} depot counter${stands.length > 1 ? 's' : ''}, station master desk, and 24×7 helpline ${state.helpline.primary}. Schedules & booking info included.`;
 
 // Connected express routes originating or ending at this depot
 const connectedRoutes = ROUTES.filter(
