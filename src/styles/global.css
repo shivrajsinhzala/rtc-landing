@@ -1114,7 +1114,7 @@ header.site-header {
 .footer-top {
   padding: 3rem 0 2rem;
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1.2fr;
+  grid-template-columns: 1.5fr 1fr 1.2fr 1fr;
   gap: 2.5rem;
 }
 
