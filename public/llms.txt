@@ -1,0 +1,33 @@
+# RTC Portal — State Road Transport Corporation Directory
+
+> Public transportation enquiry directory, station master contact numbers, and intercity bus route schedules across Indian state transport corporations: UPSRTC (Uttar Pradesh), MSRTC (Maharashtra), RSRTC (Rajasthan), Haryana Roadways, HRTC (Himachal Pradesh), UTC (Uttarakhand), and PUNBUS / PRTC (Punjab).
+
+All telephone numbers and station desks are compiled directly from published records of the respective state corporations (.gov.in public disclosures). Each depot page provides tap-to-call enquiry desk numbers, station master offices, and 24x7 statewide customer service helplines.
+
+## State Directories
+- [State RTCs Overview](https://rtc.shivrajsinh.in/states)
+- [National Intercity Timetables](https://rtc.shivrajsinh.in/timetables)
+- [Emergency & Highway Helplines (112, NHAI 1033)](https://rtc.shivrajsinh.in/emergency)
+
+### State Hubs
+- [Uttar Pradesh — UPSRTC Bus Stand Directory & Routes](https://rtc.shivrajsinh.in/uttar-pradesh)
+- [Maharashtra — MSRTC ST Stand Enquiry & Timetables](https://rtc.shivrajsinh.in/maharashtra)
+- [Rajasthan — RSRTC Roadways Bus Stand Contacts](https://rtc.shivrajsinh.in/rajasthan)
+- [Haryana — Haryana Roadways Depots & Time Table](https://rtc.shivrajsinh.in/haryana)
+- [Himachal Pradesh — HRTC Himachal Roadways Contacts](https://rtc.shivrajsinh.in/himachal-pradesh)
+- [Uttarakhand — UTC Roadways Station Master Desks](https://rtc.shivrajsinh.in/uttarakhand)
+- [Punjab — PUNBUS & PRTC Enquiry Directory](https://rtc.shivrajsinh.in/punjab)
+
+## URL Structure
+- Depot Contact Page: `https://rtc.shivrajsinh.in/{state-slug}/{city}-bus-station-contact-number` (e.g., `/uttar-pradesh/kanpur-bus-station-contact-number`)
+- Intercity Route Timetable: `https://rtc.shivrajsinh.in/{state-slug}/routes/{origin}-to-{destination}-bus-time-table` (e.g., `/maharashtra/routes/pune-to-mumbai-bus-time-table`)
+- State Routes Index: `https://rtc.shivrajsinh.in/{state-slug}/routes`
+
+## Sourcing & Attribution
+- Uttar Pradesh: upsrtc.up.gov.in
+- Maharashtra: msrtc.maharashtra.gov.in
+- Rajasthan: transport.rajasthan.gov.in/rsrtc
+- Haryana: hartrans.gov.in
+- Himachal Pradesh: hrtchp.com
+- Uttarakhand: utconline.uk.gov.in
+- Punjab: punbusonline.com
