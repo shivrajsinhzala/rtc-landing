@@ -324,16 +324,28 @@ const baseJsonLd: unknown[] = [
     });
   }
 
-  // Resilient multi-slot AdSense binding
+  // Resilient multi-slot AdSense binding with IntersectionObserver
   function initAds() {
-    const slots = document.querySelectorAll('ins.adsbygoogle');
-    slots.forEach((slot) => {
-      if (slot.dataset.bound === '1') return;
+    const slots = [...document.querySelectorAll('ins.adsbygoogle')];
+    if (!slots.length) return;
+    const fill = (slot) => {
+      if (slot.dataset.bound === '1' || !slot.offsetWidth) return false;
       slot.dataset.bound = '1';
       try {
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch {}
-    });
+      return true;
+    };
+    if (!('IntersectionObserver' in window)) {
+      slots.forEach(fill);
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting && fill(e.target)) io.unobserve(e.target);
+      }
+    }, { rootMargin: '800px 0px' });
+    slots.forEach((slot) => io.observe(slot));
   }
 
   if (document.readyState === 'loading') {
