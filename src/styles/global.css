@@ -1058,6 +1058,148 @@ header.site-header {
   background: var(--primary-blue-hover);
 }
 
+.dial-btn-pair {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-subtle);
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dial-btn-pair:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(21, 94, 239, 0.2);
+}
+
+.dial-btn-pair .btn-dial {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.btn-dial-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #1048BD;
+  color: #ffffff;
+  border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.btn-dial-copy:hover {
+  background: #0d3b9b;
+}
+
+.table-num-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  transition: border-color 0.15s ease;
+}
+
+.table-num-item:hover {
+  border-color: var(--primary-blue);
+}
+
+.copy-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--slate-muted);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 3px;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.copy-icon-btn:hover {
+  color: var(--primary-blue);
+  background: rgba(21, 94, 239, 0.1);
+}
+
+/* Operational Hours Guidance Strip */
+.depot-status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--success);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.86rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px rgba(22, 132, 90, 0.2);
+  animation: pulse-dot 2.2s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.75; }
+}
+
+.status-timing {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--ink-secondary);
+}
+
+/* Toast Component */
+.rtc-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--ink);
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  z-index: 99999;
+  opacity: 0;
+  transform: translateY(12px) scale(0.95);
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rtc-toast.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 .btn-dial.secondary {
   background: var(--bg-subtle);
   color: var(--ink-secondary);

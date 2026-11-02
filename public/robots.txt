@@ -1,5 +1,6 @@
 # RTC Portal robots.txt — Full AI Bot & Search Engine Discovery
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
 
 # Google & Bing
@@ -9,7 +10,10 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-# AI Search & Answer Engines (GEO)
+# Generative AI search engines, answer engines & agents
+User-agent: OAI-SearchBot
+Allow: /
+
 User-agent: GPTBot
 Allow: /
 
@@ -22,10 +26,28 @@ Allow: /
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-SearchBot
+Allow: /
+
 User-agent: anthropic-ai
+Allow: /
+
+User-agent: Google-Extended
 Allow: /
 
 User-agent: Applebot
 Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# LLM manifest files for AI agents and RAG engines
+# https://rtc.shivrajsinh.in/llms.txt
 
 Sitemap: https://rtc.shivrajsinh.in/sitemap-index.xml

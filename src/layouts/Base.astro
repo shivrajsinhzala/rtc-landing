@@ -353,7 +353,41 @@ const baseJsonLd: unknown[] = [
   } else {
     initAds();
   }
+
+  // Universal '/' shortcut to jump to search
+  window.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement)?.tagName)) {
+      const searchInput = document.getElementById('national-search-input') || document.getElementById('depot-filter-input');
+      if (searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  });
+
+  // Universal one-tap copy phone number to clipboard with animated toast
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest('[data-copy]');
+    if (!btn) return;
+    const text = btn.getAttribute('data-copy');
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('rtc-toast');
+      if (toast) {
+        toast.textContent = `✓ Copied ${text} to clipboard`;
+        toast.classList.add('visible');
+        clearTimeout((window as any)._toastTimer);
+        (window as any)._toastTimer = setTimeout(() => {
+          toast.classList.remove('visible');
+        }, 2500);
+      }
+    }).catch(() => {});
+  });
 </script>
+
+<div id="rtc-toast" class="rtc-toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
 </body>
 </html>
