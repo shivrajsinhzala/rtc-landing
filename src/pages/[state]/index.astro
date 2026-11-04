@@ -10,8 +10,9 @@ import { DEPOTS as HP_DEPOTS } from '../../data/himachal-pradesh/depots.data.mjs
 import { DEPOTS as UK_DEPOTS } from '../../data/uttarakhand/depots.data.mjs';
 import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
 import { ROUTES } from '../../data/routes.data.mjs';
-// Utility guides exist only for states with a sourced guides file (UP today).
+// Utility guides exist for states with a sourced guides file.
 import { GUIDES as UP_GUIDES } from '../../data/uttar-pradesh/guides.data.mjs';
+import { GUIDES as MH_GUIDES } from '../../data/maharashtra/guides.data.mjs';
 
 export function getStaticPaths() {
   const sources = {
@@ -25,6 +26,7 @@ export function getStaticPaths() {
   };
   const guideSources: Record<string, any[]> = {
     'uttar-pradesh': UP_GUIDES,
+    'maharashtra': MH_GUIDES,
   };
   return Object.keys(sources).map((stateId) => ({
     params: { state: stateId },

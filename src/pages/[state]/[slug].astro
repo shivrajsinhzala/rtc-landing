@@ -12,6 +12,7 @@ import { DEPOTS as PB_DEPOTS } from '../../data/punjab/depots.data.mjs';
 // Utility guides live per state; only states with a sourced guides file appear here. Depot and
 // guide pages share the /<state>/<slug> namespace, so they must share this one route.
 import { GUIDES as UP_GUIDES } from '../../data/uttar-pradesh/guides.data.mjs';
+import { GUIDES as MH_GUIDES } from '../../data/maharashtra/guides.data.mjs';
 
 /**
  * One dynamic route for every state's depot pages. Adding a second state means adding its
@@ -30,6 +31,7 @@ export function getStaticPaths() {
   };
   const guideSources = {
     'uttar-pradesh': UP_GUIDES,
+    'maharashtra': MH_GUIDES,
   };
   const paths = [];
   for (const [stateId, depots] of Object.entries(sources)) {
